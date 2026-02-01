@@ -1,0 +1,1764 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Fashion | iBlue Commerce</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #ff0066;
+      --primary-dark: #cc0052;
+      --secondary: #6c757d;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --light: #f8f9fa;
+      --dark: #343a40;
+      --gray: #6c757d;
+      --light-gray: #e9ecef;
+      --border: #dee2e6;
+      --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      --radius: 8px;
+      --fashion-pink: #ff0066;
+      --fashion-purple: #9c27b0;
+      --fashion-teal: #009688;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #fef6f9;
+      color: #333;
+      line-height: 1.6;
+      padding-bottom: 80px; /* Space for mobile filter bar */
+    }
+
+    /* Mobile-First Header */
+    .main-header {
+      background: linear-gradient(135deg, var(--fashion-pink) 0%, var(--fashion-purple) 100%);
+      color: white;
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .logo i {
+      font-size: 1.5rem;
+    }
+
+    .logo-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .search-bar {
+      flex: 1;
+      min-width: 0; /* Allow flex item to shrink below content size */
+    }
+
+    .search-bar input {
+      width: 100%;
+      padding: 10px 15px 10px 40px;
+      border: none;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      background: rgba(255, 255, 255, 0.9);
+    }
+
+    .search-bar i {
+      position: absolute;
+      left: 15px;
+      top: 50%;
+      transform: translateY(-50%);
+      color: var(--fashion-pink);
+      font-size: 0.9rem;
+    }
+
+    .mobile-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mobile-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--danger);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 600;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Fashion Banner */
+    .fashion-banner {
+      background: linear-gradient(135deg, var(--fashion-pink) 0%, var(--fashion-purple) 100%);
+      color: white;
+      padding: 20px 15px;
+      text-align: center;
+      margin-bottom: 15px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .fashion-banner::before {
+      content: "👗 👕 👖 👠";
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      transform: translate(-50%, -50%);
+      font-size: 3rem;
+      opacity: 0.1;
+    }
+
+    .fashion-banner-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      gap: 10px;
+      position: relative;
+      z-index: 1;
+    }
+
+    .fashion-banner h1 {
+      font-size: 1.6rem;
+      margin: 0;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .fashion-banner p {
+      font-size: 0.95rem;
+      opacity: 0.9;
+      max-width: 600px;
+    }
+
+    .fashion-icon {
+      font-size: 2rem;
+    }
+
+    /* Mobile Navigation */
+    .mobile-nav {
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      background: white;
+      border-bottom: 1px solid var(--border);
+      padding: 10px 15px;
+      gap: 10px;
+      position: sticky;
+      top: 67px;
+      z-index: 999;
+      box-shadow: 0 2px 10px rgba(255, 0, 102, 0.1);
+    }
+
+    .mobile-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-btn {
+      padding: 8px 15px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--dark);
+      text-decoration: none;
+      font-size: 0.85rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+
+    .nav-btn.active {
+      background: var(--fashion-pink);
+      border-color: var(--fashion-pink);
+      color: white;
+      font-weight: 500;
+    }
+
+    /* Floating Filter Bar */
+    .filter-bar {
+      position: fixed;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      background: white;
+      border-radius: 50px;
+      box-shadow: 0 5px 25px rgba(255, 0, 102, 0.15);
+      padding: 12px 20px;
+      display: flex;
+      align-items: center;
+      gap: 15px;
+      z-index: 1000;
+      width: 90%;
+      max-width: 500px;
+      border: 1px solid rgba(255, 0, 102, 0.1);
+    }
+
+    .filter-scroll {
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      gap: 10px;
+      flex: 1;
+    }
+
+    .filter-scroll::-webkit-scrollbar {
+      display: none;
+    }
+
+    .filter-chip {
+      padding: 6px 12px;
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.8rem;
+      white-space: nowrap;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 5px;
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+
+    .filter-chip.active {
+      background: var(--fashion-pink);
+      color: white;
+      border-color: var(--fashion-pink);
+    }
+
+    .filter-btn {
+      background: var(--fashion-pink);
+      color: white;
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      border: none;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      cursor: pointer;
+      flex-shrink: 0;
+      transition: background 0.3s;
+    }
+
+    .filter-btn:hover {
+      background: var(--fashion-purple);
+    }
+
+    /* Products Grid */
+    .products-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 15px;
+    }
+
+    .products-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 20px;
+    }
+
+    .results-count {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .sort-select {
+      padding: 8px 12px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      background: white;
+      font-size: 0.9rem;
+      min-width: 140px;
+    }
+
+    .products-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+      gap: 20px;
+      margin-bottom: 30px;
+    }
+
+    /* Product Card for Mobile - UPDATED FOR FASHION */
+    .product-card {
+      background: white;
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      height: 100%;
+      border: 1px solid rgba(255, 0, 102, 0.05);
+    }
+
+    .product-card:hover {
+      transform: translateY(-5px);
+      box-shadow: 0 10px 25px rgba(255, 0, 102, 0.15);
+    }
+
+    .product-image {
+      position: relative;
+      padding-top: 120%; /* Taller for fashion items */
+      overflow: hidden;
+      background: linear-gradient(135deg, #fef6f9 0%, #f9f0f3 100%);
+    }
+
+    .product-image img {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      object-fit: cover; /* Cover for fashion items */
+      transition: transform 0.5s ease;
+    }
+
+    .product-card:hover .product-image img {
+      transform: scale(1.05);
+    }
+
+    .product-badge {
+      position: absolute;
+      top: 12px;
+      left: 12px;
+      padding: 4px 10px;
+      border-radius: 4px;
+      font-size: 0.75rem;
+      font-weight: 600;
+      color: white;
+      z-index: 2;
+    }
+
+    .badge-sale {
+      background: var(--danger);
+    }
+
+    .badge-featured {
+      background: var(--warning);
+    }
+
+    .badge-out {
+      background: var(--gray);
+    }
+
+    .badge-new {
+      background: var(--success);
+    }
+
+    .badge-fashion {
+      background: var(--fashion-pink);
+    }
+
+    .badge-trending {
+      background: var(--fashion-purple);
+    }
+
+    .product-info {
+      padding: 15px;
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .product-category {
+      color: var(--fashion-pink);
+      font-size: 0.8rem;
+      margin-bottom: 6px;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      font-weight: 600;
+    }
+
+    .product-title {
+      font-size: 0.95rem;
+      font-weight: 600;
+      margin-bottom: 10px;
+      line-height: 1.4;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 2.8em;
+    }
+
+    .product-title a {
+      color: inherit;
+      text-decoration: none;
+    }
+
+    .product-title a:hover {
+      color: var(--fashion-pink);
+    }
+
+    .product-price {
+      margin-top: auto;
+      margin-bottom: 15px;
+    }
+
+    .current-price {
+      font-size: 1.2rem;
+      font-weight: 700;
+      color: var(--fashion-pink);
+    }
+
+    .original-price {
+      font-size: 0.85rem;
+      color: var(--gray);
+      text-decoration: line-through;
+      margin-left: 8px;
+    }
+
+    .product-actions {
+      display: flex;
+      gap: 10px;
+      margin-top: auto;
+    }
+
+    .btn-details {
+      flex: 1;
+      padding: 10px;
+      background: var(--fashion-pink);
+      color: white;
+      border: none;
+      border-radius: 4px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 8px;
+      text-decoration: none;
+      text-align: center;
+      transition: background 0.3s ease;
+    }
+
+    .btn-details:hover {
+      background: var(--fashion-purple);
+    }
+
+    .btn-details:disabled {
+      background: var(--gray);
+      cursor: not-allowed;
+    }
+
+    /* Loading State */
+    .loading {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 40px;
+      grid-column: 1 / -1;
+    }
+
+    .spinner {
+      width: 30px;
+      height: 30px;
+      border: 3px solid rgba(255, 0, 102, 0.1);
+      border-radius: 50%;
+      border-top-color: var(--fashion-pink);
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Empty State */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+      grid-column: 1 / -1;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      color: var(--light-gray);
+      margin-bottom: 15px;
+    }
+
+    .empty-state h3 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: var(--dark);
+    }
+
+    .empty-state p {
+      color: var(--gray);
+      margin-bottom: 20px;
+    }
+
+    /* Modal for Filters */
+    .filter-modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      display: none;
+      align-items: flex-end;
+    }
+
+    .filter-modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: 20px 20px 0 0;
+      width: 100%;
+      max-height: 80vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(100%); }
+      to { transform: translateY(0); }
+    }
+
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      position: sticky;
+      top: 0;
+      background: white;
+      z-index: 2;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .modal-section {
+      margin-bottom: 25px;
+    }
+
+    .modal-section h4 {
+      font-size: 1rem;
+      margin-bottom: 15px;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .filter-grid {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 10px;
+    }
+
+    .filter-option {
+      padding: 8px 16px;
+      background: var(--light);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .filter-option.active {
+      background: var(--fashion-pink);
+      color: white;
+      border-color: var(--fashion-pink);
+    }
+
+    .price-inputs {
+      display: grid;
+      grid-template-columns: 1fr 1fr;
+      gap: 15px;
+    }
+
+    .price-inputs input {
+      width: 100%;
+      padding: 10px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 0.9rem;
+    }
+
+    .modal-actions {
+      padding: 20px;
+      display: flex;
+      gap: 10px;
+      position: sticky;
+      bottom: 0;
+      background: white;
+      border-top: 1px solid var(--border);
+    }
+
+    .btn-apply {
+      flex: 1;
+      padding: 15px;
+      background: var(--fashion-pink);
+      color: white;
+      border: none;
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: background 0.3s;
+    }
+
+    .btn-apply:hover {
+      background: var(--fashion-purple);
+    }
+
+    .btn-clear {
+      flex: 1;
+      padding: 15px;
+      background: var(--light);
+      color: var(--dark);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-clear:hover {
+      background: #e9ecef;
+    }
+
+    /* Size Filter */
+    .size-filters {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .size-option {
+      width: 36px;
+      height: 36px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .size-option.active {
+      background: var(--fashion-pink);
+      color: white;
+      border-color: var(--fashion-pink);
+    }
+
+    /* Desktop Styles */
+    @media (min-width: 768px) {
+      body {
+        padding-bottom: 0;
+      }
+
+      .main-header {
+        padding: 20px 0;
+      }
+
+      .header-content {
+        padding: 0 20px;
+      }
+
+      .logo i {
+        font-size: 2rem;
+      }
+
+      .logo-text {
+        font-size: 1.5rem;
+      }
+
+      .fashion-banner {
+        padding: 30px 20px;
+      }
+
+      .fashion-banner h1 {
+        font-size: 2rem;
+      }
+
+      .mobile-nav {
+        display: none; /* Hide mobile nav on desktop */
+      }
+
+      .filter-bar {
+        position: sticky;
+        top: 85px;
+        left: 0;
+        transform: none;
+        max-width: none;
+        width: auto;
+        margin: 20px 20px 0;
+        border-radius: var(--radius);
+        padding: 15px 20px;
+      }
+
+      .products-container {
+        padding: 20px;
+      }
+
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+        gap: 25px;
+      }
+
+      .product-card {
+        min-height: 480px;
+      }
+
+      .product-image {
+        padding-top: 130%;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+      }
+      
+      .filter-bar {
+        margin: 20px auto 0;
+        width: 95%;
+        max-width: 1200px;
+      }
+
+      .product-card {
+        min-height: 500px;
+      }
+    }
+
+    /* Tablet Styles */
+    @media (min-width: 768px) and (max-width: 1023px) {
+      .products-grid {
+        grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
+      }
+    }
+
+    /* Color Swatches */
+    .color-options {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    .color-option {
+      width: 28px;
+      height: 28px;
+      border-radius: 50%;
+      border: 2px solid white;
+      box-shadow: 0 0 0 1px var(--border);
+      cursor: pointer;
+      transition: transform 0.3s;
+    }
+
+    .color-option:hover {
+      transform: scale(1.1);
+    }
+
+    .color-option.active {
+      box-shadow: 0 0 0 2px var(--fashion-pink);
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Header -->
+  <header class="main-header">
+    <div class="header-content">
+      <a href="index.html" class="logo">
+        <i class="fas fa-shopping-bag"></i>
+        <span class="logo-text">iBlue</span>
+      </a>
+      
+      <div class="search-bar" style="position: relative;">
+        <i class="fas fa-search"></i>
+        <input type="text" id="searchInput" placeholder="Search fashion items...">
+      </div>
+      
+      <div class="mobile-actions">
+        <a href="login.html" class="mobile-btn" title="Account">
+          <i class="fas fa-user"></i>
+        </a>
+        <a href="cart.html" class="mobile-btn" title="Cart">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Fashion Banner -->
+  <div class="fashion-banner">
+    <div class="fashion-banner-content">
+      <h1>
+        <span class="fashion-icon">👗</span>
+        Fashion Collection
+      </h1>
+      <p>Discover the latest trends in clothing, shoes, accessories, and more</p>
+    </div>
+  </div>
+
+  <!-- Mobile Navigation -->
+  <nav class="mobile-nav">
+    <a href="index.html" class="nav-btn">Home</a>
+    <a href="fashion.html" class="nav-btn active">Fashion</a>
+    <a href="health & beauty.html" class="nav-btn">Health & Beauty</a>
+    <a href="electronics.html" class="nav-btn">Electronics</a>
+    <a href="electronic accessories.html" class="nav-btn">Electronic Accessories</a>
+    <a href="sports & entertainment.html" class="nav-btn">Sports & Entertainment</a>
+    <a href="tools & hardware.html" class="nav-btn">Tools & Hardware</a>
+    <a href="vehicle accessories.html" class="nav-btn">Vehicle Accessories</a>
+  </nav>
+
+  <!-- Floating Filter Bar -->
+  <div class="filter-bar">
+    <div class="filter-scroll" id="filterScroll">
+      <!-- Fashion subcategories will be added here -->
+    </div>
+    <button class="filter-btn" onclick="openFilterModal()">
+      <i class="fas fa-sliders-h"></i>
+    </button>
+  </div>
+
+  <!-- Main Content -->
+  <div class="products-container">
+    <div class="products-header">
+      <div>
+        <h2 style="font-size: 1.3rem; margin-bottom: 5px; color: var(--fashion-pink);">Fashion Products</h2>
+        <p class="results-count" id="resultsCount">Loading fashion items...</p>
+      </div>
+      <select class="sort-select" id="sortSelect" onchange="sortProducts()">
+        <option value="newest">New Arrivals</option>
+        <option value="price_low">Price: Low to High</option>
+        <option value="price_high">Price: High to Low</option>
+        <option value="name">Name: A-Z</option>
+        <option value="popular">Most Popular</option>
+      </select>
+    </div>
+
+    <!-- Products Grid -->
+    <div class="products-grid" id="productsGrid">
+      <!-- Fashion products will be loaded here -->
+    </div>
+
+    <!-- Loading State -->
+    <div class="loading" id="loading">
+      <div class="spinner"></div>
+    </div>
+
+    <!-- Empty State -->
+    <div class="empty-state" id="emptyState" style="display: none;">
+      <i class="fas fa-tshirt"></i>
+      <h3>No Fashion Items Found</h3>
+      <p>We couldn't find any fashion products. Try adjusting your search or check back later for new arrivals.</p>
+      <a href="categories.html" class="btn-details" style="max-width: 200px; margin: 0 auto;">
+        <i class="fas fa-arrow-left"></i> Browse All Categories
+      </a>
+    </div>
+  </div>
+
+  <!-- Filter Modal -->
+  <div class="filter-modal" id="filterModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="font-size: 1.2rem; color: var(--fashion-pink);">Filter Fashion Items</h3>
+        <button onclick="closeFilterModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--gray);">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      
+      <div class="modal-body">
+        <!-- Fashion Categories Filter -->
+        <div class="modal-section">
+          <h4><i class="fas fa-tshirt"></i> Fashion Category</h4>
+          <div class="filter-grid" id="categoryFilters">
+            <!-- Fashion categories will be loaded here -->
+          </div>
+        </div>
+        
+        <!-- Size Filter -->
+        <div class="modal-section">
+          <h4><i class="fas fa-ruler"></i> Size</h4>
+          <div class="size-filters" id="sizeFilters">
+            <!-- Size options will be loaded here -->
+          </div>
+        </div>
+        
+        <!-- Price Filter -->
+        <div class="modal-section">
+          <h4><i class="fas fa-money-bill-wave"></i> Price Range (UGX)</h4>
+          <div class="price-inputs">
+            <div>
+              <label style="display: block; margin-bottom: 5px; font-size: 0.9rem; color: var(--gray);">Min</label>
+              <input type="number" id="minPrice" placeholder="0" min="0">
+            </div>
+            <div>
+              <label style="display: block; margin-bottom: 5px; font-size: 0.9rem; color: var(--gray);">Max</label>
+              <input type="number" id="maxPrice" placeholder="500000" min="0">
+            </div>
+          </div>
+        </div>
+        
+        <!-- Status Filter -->
+        <div class="modal-section">
+          <h4><i class="fas fa-check-circle"></i> Status</h4>
+          <div class="filter-grid">
+            <div class="filter-option" onclick="toggleFilter(this, 'in_stock')">
+              <i class="fas fa-check" style="margin-right: 5px;"></i> In Stock
+            </div>
+            <div class="filter-option" onclick="toggleFilter(this, 'featured')">
+              <i class="fas fa-star" style="margin-right: 5px;"></i> Featured
+            </div>
+            <div class="filter-option" onclick="toggleFilter(this, 'on_sale')">
+              <i class="fas fa-tag" style="margin-right: 5px;"></i> On Sale
+            </div>
+            <div class="filter-option" onclick="toggleFilter(this, 'trending')">
+              <i class="fas fa-fire" style="margin-right: 5px;"></i> Trending
+            </div>
+          </div>
+        </div>
+      </div>
+      
+      <div class="modal-actions">
+        <button class="btn-clear" onclick="clearFilters()">
+          Clear All
+        </button>
+        <button class="btn-apply" onclick="applyModalFilters()">
+          Apply Filters
+        </button>
+      </div>
+    </div>
+  </div>
+  
+  <script>
+    // Initialize Supabase client
+    const supabaseUrl = "https://amxhpxqakqrjjihwkzcq.supabase.co";
+    const supabaseKey = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFteGhweHFha3FyamppaHdremNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc5Nzc2NjUsImV4cCI6MjA4MzU1MzY2NX0.yIAZtz3bUc_ZxF8-f4cqW1fKJgFiRsiJdj4qgCDmM0g";
+    
+    const sb = supabase.createClient(supabaseUrl, supabaseKey);
+    
+    // Global variables
+    let allFashionProducts = [];
+    let filteredFashionProducts = [];
+    let currentFilters = {
+      category: null,
+      size: null,
+      minPrice: 0,
+      maxPrice: 500000,
+      inStock: false,
+      featured: false,
+      onSale: false,
+      trending: false,
+      search: ''
+    };
+    let currentSort = 'newest';
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      loadFashionProducts();
+      updateCartCount();
+      setupEventListeners();
+    });
+
+    // Setup event listeners
+    function setupEventListeners() {
+      // Search input
+      document.getElementById('searchInput').addEventListener('input', debounce(function(e) {
+        currentFilters.search = e.target.value.toLowerCase();
+        applyFilters();
+      }, 300));
+    }
+
+    // Load fashion products from Supabase - SPECIFICALLY FROM products_new TABLE
+    async function loadFashionProducts() {
+      const loading = document.getElementById('loading');
+      const productsGrid = document.getElementById('productsGrid');
+      const emptyState = document.getElementById('emptyState');
+      
+      loading.style.display = 'flex';
+      productsGrid.innerHTML = '';
+      emptyState.style.display = 'none';
+      
+      try {
+        console.log('Loading fashion products from products_new table...');
+        
+        // Define fashion-related categories and keywords
+        const fashionCategories = [
+          'fashion', 'clothing', 'clothes', 'apparel', 'wear',
+          'shirts', 't-shirts', 'tshirts', 'blouses', 'tops',
+          'pants', 'trousers', 'jeans', 'shorts', 'skirts',
+          'dresses', 'gowns', 'suits', 'jackets', 'coats',
+          'sweaters', 'hoodies', 'sweatshirts', 'jumpers',
+          'shoes', 'footwear', 'sneakers', 'boots', 'sandals',
+          'heels', 'flats', 'accessories', 'bags', 'handbags',
+          'purses', 'wallets', 'belts', 'jewelry', 'necklaces',
+          'bracelets', 'earrings', 'rings', 'watches', 'sunglasses',
+          'hats', 'caps', 'scarves', 'gloves', 'underwear',
+          'lingerie', 'swimwear', 'activewear', 'sportswear',
+          'traditional', 'cultural', 'ethnic', 'kids', 'children',
+          'men', 'women', 'unisex', 'baby'
+        ];
+  
+
+const fashionKeywords = [
+  'shirt', 't-shirt', 'blouse', 'top',
+  'pant', 'trouser', 'jean', 'dress',
+  'shoe', 'sneaker', 'boot', 'bag',
+  'watch', 'belt', 'men', 'women',
+  'kid', 'baby'
+];
+        
+        // Fetch ALL products from products_new table
+        const { data: allProducts, error } = await sb
+          .from('products_new')  // SPECIFIC TABLE NAME
+          .select('*')
+          .eq('active', true)
+          .order('created_at', { ascending: false })
+          .limit(200);
+          
+        console.log('All products from products_new:', allProducts);
+        
+        if (error) {
+          console.error('Supabase error:', error);
+          throw error;
+        }
+        
+        if (!allProducts || allProducts.length === 0) {
+          console.log('No products found in products_new table');
+          emptyState.style.display = 'block';
+          document.getElementById('resultsCount').textContent = '0 fashion products';
+          loading.style.display = 'none';
+          return;
+        }
+        
+        // Filter for fashion products
+        const fashionProducts = allProducts.filter(product => {
+          // Check category field
+          if (product.category) {
+            const categoryLower = product.category.toLowerCase();
+            if (fashionCategories.some(cat => categoryLower.includes(cat.toLowerCase()))) {
+              return true;
+            }
+          }
+          
+          // Check product name
+          if (product.name) {
+            const nameLower = product.name.toLowerCase();
+            const fashionKeywords = [
+              'shirt', 't-shirt', 'blouse', 'top', 'pant', 'trouser', 'jean',
+              'short', 'skirt', 'dress', 'gown', 'suit', 'jacket', 'coat',
+              'sweater', 'hoodie', 'jumper', 'shoe', 'sneaker', 'boot',
+              'sandal', 'heel', 'flat', 'bag', 'purse', 'wallet', 'belt',
+              'necklace', 'bracelet', 'earring', 'ring', 'watch', 'sunglass',
+              'hat', 'cap', 'scarf', 'glove', 'lingerie', 'swimwear',
+              'activewear', 'sportswear', 'traditional', 'ethnic', 'kid',
+              'men', 'women', 'unisex', 'baby', 'child'
+            ];
+            
+            if (fashionKeywords.some(keyword => nameLower.includes(keyword))) {
+              return true;
+            }
+          }
+          
+          // Check description
+          if (product.description) {
+            const descLower = product.description.toLowerCase();
+            if (fashionCategories.some(cat => descLower.includes(cat.toLowerCase())) ||
+                fashionKeywords.some(keyword => descLower.includes(keyword))) {
+              return true;
+            }
+          }
+          
+          return false;
+        });
+        
+        console.log('Filtered fashion products:', fashionProducts);
+        
+        // Process fashion products with safe defaults
+        allFashionProducts = fashionProducts.map(product => {
+          // Ensure price and discount_price are numbers
+          const price = parseFloat(product.price) || 0;
+          const discountPrice = product.discount_price ? parseFloat(product.discount_price) : null;
+          
+          // Determine fashion category
+          let fashionCategory = 'Other Fashion';
+          if (product.category) {
+            const cat = product.category.toLowerCase();
+            if (cat.includes('shirt') || cat.includes('blouse') || cat.includes('top')) fashionCategory = 'Tops';
+            else if (cat.includes('pant') || cat.includes('trouser') || cat.includes('jean')) fashionCategory = 'Bottoms';
+            else if (cat.includes('dress') || cat.includes('gown')) fashionCategory = 'Dresses';
+            else if (cat.includes('jacket') || cat.includes('coat') || cat.includes('sweater')) fashionCategory = 'Outerwear';
+            else if (cat.includes('shoe') || cat.includes('footwear') || cat.includes('sneaker')) fashionCategory = 'Footwear';
+            else if (cat.includes('bag') || cat.includes('purse') || cat.includes('wallet')) fashionCategory = 'Bags & Accessories';
+            else if (cat.includes('jewelry') || cat.includes('watch') || cat.includes('necklace')) fashionCategory = 'Jewelry';
+            else if (cat.includes('traditional') || cat.includes('ethnic')) fashionCategory = 'Traditional Wear';
+            else if (cat.includes('kid') || cat.includes('child') || cat.includes('baby')) fashionCategory = 'Kids Fashion';
+            else if (cat.includes('men')) fashionCategory = "Men's Fashion";
+            else if (cat.includes('women')) fashionCategory = "Women's Fashion";
+          }
+          
+          // Extract size if available
+          let size = null;
+          if (product.size) {
+            size = product.size;
+          } else if (product.description) {
+            // Try to extract size from description
+            const sizeMatch = product.description.match(/\b(XS|S|M|L|XL|XXL|XXXL|\d+)\b/i);
+            if (sizeMatch) size = sizeMatch[1].toUpperCase();
+          }
+          
+          return {
+            ...product,
+            price: price,
+            discount_price: discountPrice,
+            fashionCategory: fashionCategory,
+            size: size,
+            // Ensure stock_quantity is a number
+            stock_quantity: parseInt(product.stock_quantity) || 0,
+            // Add trending flag (random for demo, in real app this would come from database)
+            trending: Math.random() > 0.7
+          };
+        });
+        
+        console.log('Processed fashion products:', allFashionProducts);
+        
+        filteredFashionProducts = [...allFashionProducts];
+        
+        // Load fashion categories and sizes
+        loadFashionCategories(allFashionProducts);
+        loadSizeFilters(allFashionProducts);
+        
+        // Apply initial filters
+        applyFilters();
+        
+      } catch (error) {
+        console.error('Error loading fashion products:', error);
+        productsGrid.innerHTML = `
+          <div class="empty-state" style="display: block; grid-column: 1 / -1;">
+            <i class="fas fa-exclamation-circle"></i>
+            <h3>Error Loading Fashion Products</h3>
+            <p>Please check console for details.</p>
+            <p><small>${error.message}</small></p>
+          </div>
+        `;
+      } finally {
+        loading.style.display = 'none';
+      }
+    }
+
+    // Load fashion categories
+    function loadFashionCategories(fashionProducts) {
+      const categoryFilters = document.getElementById('categoryFilters');
+      const filterScroll = document.getElementById('filterScroll');
+      
+      // Get unique fashion categories
+      const categories = [...new Set(fashionProducts.map(p => p.fashionCategory).filter(Boolean))].sort();
+      
+      console.log('Fashion categories found:', categories);
+      
+      // Clear existing filters
+      categoryFilters.innerHTML = '';
+      filterScroll.innerHTML = '';
+      
+      // Add "All Fashion" option
+      const allOption = document.createElement('div');
+      allOption.className = 'filter-option active';
+      allOption.textContent = 'All Fashion';
+      allOption.onclick = function() {
+        setActiveCategory(this, null);
+      };
+      categoryFilters.appendChild(allOption);
+      
+      // Add "All Fashion" chip to scrollable bar
+      const allChip = document.createElement('div');
+      allChip.className = 'filter-chip active';
+      allChip.innerHTML = '<i class="fas fa-tshirt"></i> All';
+      allChip.onclick = function() {
+        setActiveCategory(this, null);
+        updateFilterChips();
+      };
+      filterScroll.appendChild(allChip);
+      
+      // Add each category
+      categories.forEach(category => {
+        // Modal filter option
+        const option = document.createElement('div');
+        option.className = 'filter-option';
+        option.textContent = category;
+        option.onclick = function() {
+          setActiveCategory(this, category);
+        };
+        categoryFilters.appendChild(option);
+        
+        // Scrollable chip
+        const chip = document.createElement('div');
+        chip.className = 'filter-chip';
+        chip.innerHTML = `<i class="fas fa-${getCategoryIcon(category)}"></i> ${category}`;
+        chip.onclick = function() {
+          setActiveCategory(this, category);
+          updateFilterChips();
+        };
+        filterScroll.appendChild(chip);
+      });
+      
+      // Add status chips
+      const statusChips = [
+        { icon: 'check', label: 'In Stock', filter: 'in_stock' },
+        { icon: 'star', label: 'Featured', filter: 'featured' },
+        { icon: 'tag', label: 'On Sale', filter: 'on_sale' },
+        { icon: 'fire', label: 'Trending', filter: 'trending' }
+      ];
+      
+      statusChips.forEach(status => {
+        const chip = document.createElement('div');
+        chip.className = 'filter-chip';
+        chip.innerHTML = `<i class="fas fa-${status.icon}"></i> ${status.label}`;
+        chip.onclick = function() {
+          toggleFilter(this, status.filter);
+        };
+        filterScroll.appendChild(chip);
+      });
+    }
+    
+    // Get icon for category
+    function getCategoryIcon(category) {
+      const iconMap = {
+        'Tops': 'tshirt',
+        'Bottoms': 'jeans',
+        'Dresses': 'female',
+        'Outerwear': 'hoodie',
+        'Footwear': 'shoe-prints',
+        'Bags & Accessories': 'shopping-bag',
+        'Jewelry': 'gem',
+        'Traditional Wear': 'hands',
+        "Men's Fashion": 'male',
+        "Women's Fashion": 'female',
+        'Kids Fashion': 'child',
+        'Other Fashion': 'tshirt'
+      };
+      return iconMap[category] || 'tshirt';
+    }
+
+    // Load size filters
+    function loadSizeFilters(fashionProducts) {
+      const sizeFilters = document.getElementById('sizeFilters');
+      
+      // Get unique sizes
+      const sizes = [...new Set(fashionProducts.map(p => p.size).filter(Boolean))].sort((a, b) => {
+        // Custom sorting for sizes
+        const sizeOrder = ['XS', 'S', 'M', 'L', 'XL', 'XXL', 'XXXL'];
+        const aIndex = sizeOrder.indexOf(a.toUpperCase());
+        const bIndex = sizeOrder.indexOf(b.toUpperCase());
+        
+        if (aIndex !== -1 && bIndex !== -1) return aIndex - bIndex;
+        if (aIndex !== -1) return -1;
+        if (bIndex !== -1) return 1;
+        return a.localeCompare(b);
+      });
+      
+      console.log('Sizes found:', sizes);
+      
+      // Clear existing size filters
+      sizeFilters.innerHTML = '';
+      
+      // Add each size option
+      sizes.forEach(size => {
+        const sizeOption = document.createElement('div');
+        sizeOption.className = 'size-option';
+        sizeOption.textContent = size;
+        sizeOption.title = `Size ${size}`;
+        sizeOption.onclick = function() {
+          // Toggle active class
+          document.querySelectorAll('#sizeFilters .size-option').forEach(opt => {
+            opt.classList.remove('active');
+          });
+          this.classList.add('active');
+          
+          // Update filter
+          currentFilters.size = this.classList.contains('active') ? size : null;
+          applyFilters();
+        };
+        sizeFilters.appendChild(sizeOption);
+      });
+      
+      // Add "All Sizes" option
+      const allSizes = document.createElement('div');
+      allSizes.className = 'size-option active';
+      allSizes.textContent = 'All';
+      allSizes.title = 'All Sizes';
+      allSizes.onclick = function() {
+        document.querySelectorAll('#sizeFilters .size-option').forEach(opt => {
+          opt.classList.remove('active');
+        });
+        this.classList.add('active');
+        currentFilters.size = null;
+        applyFilters();
+      };
+      sizeFilters.insertBefore(allSizes, sizeFilters.firstChild);
+    }
+
+    // Set active category
+    function setActiveCategory(element, category) {
+      // Remove active class from all category options
+      document.querySelectorAll('#categoryFilters .filter-option').forEach(opt => {
+        opt.classList.remove('active');
+      });
+      
+      // Add active class to clicked option
+      element.classList.add('active');
+      
+      // Update filter
+      currentFilters.category = category;
+      
+      // Apply filters immediately
+      applyFilters();
+    }
+
+    // Toggle filter
+    function toggleFilter(element, filterType) {
+      element.classList.toggle('active');
+      
+      switch(filterType) {
+        case 'in_stock':
+          currentFilters.inStock = element.classList.contains('active');
+          break;
+        case 'featured':
+          currentFilters.featured = element.classList.contains('active');
+          break;
+        case 'on_sale':
+          currentFilters.onSale = element.classList.contains('active');
+          break;
+        case 'trending':
+          currentFilters.trending = element.classList.contains('active');
+          break;
+      }
+      
+      updateFilterChips();
+      applyFilters(); // Apply filters immediately
+    }
+
+    // Update filter chips
+    function updateFilterChips() {
+      const chips = document.querySelectorAll('#filterScroll .filter-chip');
+      chips.forEach(chip => {
+        // Update category chips
+        if (chip.textContent.includes('All') && chip.textContent.includes('Fashion')) {
+          chip.classList.toggle('active', currentFilters.category === null);
+        } else if (chip.textContent.includes('In Stock')) {
+          chip.classList.toggle('active', currentFilters.inStock);
+        } else if (chip.textContent.includes('Featured')) {
+          chip.classList.toggle('active', currentFilters.featured);
+        } else if (chip.textContent.includes('On Sale')) {
+          chip.classList.toggle('active', currentFilters.onSale);
+        } else if (chip.textContent.includes('Trending')) {
+          chip.classList.toggle('active', currentFilters.trending);
+        } else if (currentFilters.category) {
+          chip.classList.toggle('active', chip.textContent.includes(currentFilters.category));
+        }
+      });
+    }
+
+    // Apply filters for fashion products
+    function applyFilters() {
+      console.log('Applying fashion filters:', currentFilters);
+      console.log('Total fashion products:', allFashionProducts.length);
+      
+      filteredFashionProducts = allFashionProducts.filter(product => {
+        // Search filter
+        if (currentFilters.search) {
+          const searchLower = currentFilters.search.toLowerCase();
+          const nameMatch = product.name ? product.name.toLowerCase().includes(searchLower) : false;
+          const descMatch = product.description ? product.description.toLowerCase().includes(searchLower) : false;
+          const brandMatch = product.brand ? product.brand.toLowerCase().includes(searchLower) : false;
+          
+          if (!nameMatch && !descMatch && !brandMatch) {
+            return false;
+          }
+        }
+        
+        // Category filter
+        if (currentFilters.category && product.fashionCategory !== currentFilters.category) {
+          return false;
+        }
+        
+        // Size filter
+        if (currentFilters.size && product.size !== currentFilters.size) {
+          return false;
+        }
+        
+        // Price filter
+        const price = product.discount_price || product.price || 0;
+        if (price < currentFilters.minPrice || price > currentFilters.maxPrice) {
+          return false;
+        }
+        
+        // Stock filter
+        if (currentFilters.inStock && (product.stock_quantity <= 0 || !product.stock_quantity)) {
+          return false;
+        }
+        
+        // Featured filter
+        if (currentFilters.featured && !product.featured) {
+          return false;
+        }
+        
+        // Sale filter
+        if (currentFilters.onSale && !product.discount_price) {
+          return false;
+        }
+        
+        // Trending filter
+        if (currentFilters.trending && !product.trending) {
+          return false;
+        }
+        
+        return true;
+      });
+      
+      console.log('Fashion products after filtering:', filteredFashionProducts.length);
+      
+      // Sort products
+      sortProducts();
+      
+      // Update results count
+      const count = filteredFashionProducts.length;
+      document.getElementById('resultsCount').textContent = 
+        `${count} fashion item${count !== 1 ? 's' : ''}`;
+      
+      // Render products
+      renderProducts();
+    }
+
+    // Apply filters from modal
+    function applyModalFilters() {
+      const minPrice = document.getElementById('minPrice').value;
+      const maxPrice = document.getElementById('maxPrice').value;
+      
+      currentFilters.minPrice = minPrice ? parseFloat(minPrice) : 0;
+      currentFilters.maxPrice = maxPrice ? parseFloat(maxPrice) : 500000;
+      
+      console.log('Modal filters applied:', currentFilters.minPrice, currentFilters.maxPrice);
+      
+      applyFilters();
+      closeFilterModal();
+    }
+
+    // Clear all filters
+    function clearFilters() {
+      console.log('Clearing all filters');
+      
+      // Reset filter state
+      currentFilters = {
+        category: null,
+        size: null,
+        minPrice: 0,
+        maxPrice: 500000,
+        inStock: false,
+        featured: false,
+        onSale: false,
+        trending: false,
+        search: ''
+      };
+      
+      // Reset UI
+      document.getElementById('searchInput').value = '';
+      document.getElementById('minPrice').value = '';
+      document.getElementById('maxPrice').value = '';
+      document.getElementById('sortSelect').value = 'newest';
+      
+      // Remove active classes
+      document.querySelectorAll('.filter-option.active, .filter-chip.active, .size-option.active').forEach(el => {
+        el.classList.remove('active');
+      });
+      
+      // Set "All Fashion" as active
+      const firstOption = document.querySelector('#categoryFilters .filter-option:first-child');
+      const firstChip = document.querySelector('#filterScroll .filter-chip:first-child');
+      const firstSize = document.querySelector('#sizeFilters .size-option:first-child');
+      
+      if (firstOption) firstOption.classList.add('active');
+      if (firstChip) firstChip.classList.add('active');
+      if (firstSize) firstSize.classList.add('active');
+      
+      applyFilters();
+      closeFilterModal();
+    }
+
+    // Sort fashion products
+    function sortProducts() {
+      const sortBy = document.getElementById('sortSelect').value;
+      currentSort = sortBy;
+      
+      console.log('Sorting fashion products by:', sortBy);
+      
+      if (sortBy === 'newest') {
+        filteredFashionProducts.sort((a, b) => {
+          const dateA = a.created_at ? new Date(a.created_at) : new Date(0);
+          const dateB = b.created_at ? new Date(b.created_at) : new Date(0);
+          return dateB - dateA;
+        });
+      } else if (sortBy === 'price_low') {
+        filteredFashionProducts.sort((a, b) => {
+          const priceA = a.discount_price || a.price || 0;
+          const priceB = b.discount_price || b.price || 0;
+          return priceA - priceB;
+        });
+      } else if (sortBy === 'price_high') {
+        filteredFashionProducts.sort((a, b) => {
+          const priceA = a.discount_price || a.price || 0;
+          const priceB = b.discount_price || b.price || 0;
+          return priceB - priceA;
+        });
+      } else if (sortBy === 'name') {
+        filteredFashionProducts.sort((a, b) => {
+          const nameA = a.name || '';
+          const nameB = b.name || '';
+          return nameA.localeCompare(nameB);
+        });
+      } else if (sortBy === 'popular') {
+        // Sort by trending first, then by stock quantity (higher first)
+        filteredFashionProducts.sort((a, b) => {
+          if (a.trending && !b.trending) return -1;
+          if (!a.trending && b.trending) return 1;
+          return (b.stock_quantity || 0) - (a.stock_quantity || 0);
+        });
+      }
+      
+      renderProducts();
+    }
+
+    // Render fashion products
+    function renderProducts() {
+      const productsGrid = document.getElementById('productsGrid');
+      const emptyState = document.getElementById('emptyState');
+      
+      console.log('Rendering', filteredFashionProducts.length, 'fashion products');
+      
+      // Show empty state if no fashion products
+      if (filteredFashionProducts.length === 0) {
+        console.log('No fashion products to display, showing empty state');
+        productsGrid.innerHTML = '';
+        emptyState.style.display = 'block';
+        return;
+      }
+      
+      // Hide empty state
+      emptyState.style.display = 'none';
+      
+      // Clear grid
+      productsGrid.innerHTML = '';
+      
+      // Render fashion products
+      filteredFashionProducts.forEach(product => {
+        const productCard = createProductCard(product);
+        productsGrid.appendChild(productCard);
+      });
+      
+      console.log('Fashion products rendered successfully');
+    }
+
+    // Create fashion product card element
+    function createProductCard(product) {
+      const card = document.createElement('div');
+      card.className = 'product-card';
+      
+      // Ensure prices are numbers
+      const price = parseFloat(product.price) || 0;
+      const discountPrice = product.discount_price ? parseFloat(product.discount_price) : null;
+      
+      // Calculate discount percentage
+      const discountPercentage = discountPrice && price > 0 
+        ? Math.round(((price - discountPrice) / price) * 100)
+        : 0;
+      
+      // Badges - fashion-specific
+      let badgeHTML = '';
+      if (product.featured) {
+        badgeHTML += '<span class="product-badge badge-featured">Featured</span>';
+      }
+      if (discountPrice && discountPercentage > 0) {
+        badgeHTML += `<span class="product-badge badge-sale">${discountPercentage}% OFF</span>`;
+      }
+      if ((product.stock_quantity || 0) <= 0) {
+        badgeHTML += '<span class="product-badge badge-out">Out of Stock</span>';
+      } else if (product.created_at) {
+        // Show "New" badge for products created in last 30 days
+        const createdDate = new Date(product.created_at);
+        const daysSinceCreation = (Date.now() - createdDate.getTime()) / (1000 * 60 * 60 * 24);
+        if (daysSinceCreation < 30) {
+          badgeHTML += '<span class="product-badge badge-new">New Arrival</span>';
+        }
+      }
+      // Fashion badge
+      badgeHTML += '<span class="product-badge badge-fashion">Fashion</span>';
+      // Trending badge
+      if (product.trending) {
+        badgeHTML += '<span class="product-badge badge-trending">Trending</span>';
+      }
+      
+      // Get first image from images array
+      let imageUrl = 'https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&h=500&fit=crop';
+      if (product.images) {
+        if (Array.isArray(product.images) && product.images.length > 0) {
+          imageUrl = product.images[0];
+        } else if (typeof product.images === 'string' && product.images.trim() !== '') {
+          imageUrl = product.images;
+        }
+      }
+      
+      // Safe price formatting
+      const formatPrice = (priceValue) => {
+        if (isNaN(priceValue) || !isFinite(priceValue)) return '0';
+        // Remove decimals for UGX (no cents)
+        return Math.round(priceValue).toLocaleString();
+      };
+      
+      const currentPrice = discountPrice || price;
+      const originalPrice = discountPrice ? price : null;
+      
+      // Size display
+      const sizeDisplay = product.size ? 
+        `<div style="color: var(--gray); font-size: 0.85rem; margin-bottom: 8px;">
+          <i class="fas fa-ruler"></i> Size: ${product.size}
+        </div>` : '';
+      
+      card.innerHTML = `
+        <div class="product-image">
+          ${badgeHTML}
+          <img src="${imageUrl}" 
+               alt="${product.name || 'Fashion Product'}"
+               onerror="this.src='https://images.unsplash.com/photo-1490481651871-ab68de25d43d?w=400&h=500&fit=crop'">
+        </div>
+        
+        <div class="product-info">
+          <div class="product-category">${product.fashionCategory || 'Fashion'}</div>
+          <h3 class="product-title">
+            <a href="product-detail.html?id=${product.id}">${product.name || 'Unnamed Product'}</a>
+          </h3>
+          
+          ${sizeDisplay}
+          
+          <div class="product-price">
+            <span class="current-price">UGX ${formatPrice(currentPrice)}</span>
+            ${originalPrice && originalPrice > 0 ? 
+              `<span class="original-price">UGX ${formatPrice(originalPrice)}</span>` : 
+              ''}
+          </div>
+          
+          ${product.brand ? `<div style="color: var(--gray); font-size: 0.85rem; margin-bottom: 10px;"><i class="fas fa-tag"></i> ${product.brand}</div>` : ''}
+          
+          <div class="product-actions">
+            <a href="product-detail.html?id=${product.id}" class="btn-details" ${(product.stock_quantity || 0) <= 0 ? 'style="background: var(--gray);"' : ''}>
+              <i class="fas fa-eye"></i>
+              View Details
+            </a>
+          </div>
+        </div>
+      `;
+      
+      return card;
+    }
+
+    // Open filter modal
+    function openFilterModal() {
+      document.getElementById('filterModal').classList.add('active');
+      document.body.style.overflow = 'hidden';
+    }
+
+    // Close filter modal
+    function closeFilterModal() {
+      document.getElementById('filterModal').classList.remove('active');
+      document.body.style.overflow = 'auto';
+    }
+
+    // Update cart count
+    function updateCartCount() {
+      try {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+        document.getElementById('cartCount').textContent = totalItems;
+      } catch (error) {
+        console.error('Error updating cart count:', error);
+        document.getElementById('cartCount').textContent = '0';
+      }
+    }
+
+    // Debounce function
+    function debounce(func, wait) {
+      let timeout;
+      return function executedFunction(...args) {
+        const later = () => {
+          clearTimeout(timeout);
+          func(...args);
+        };
+        clearTimeout(timeout);
+        timeout = setTimeout(later, wait);
+      };
+    }
+  </script>
+</body>
+</html>

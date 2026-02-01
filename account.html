@@ -1,0 +1,2004 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>My Account | iBlue Commerce</title>
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  
+  <style>
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    :root {
+      --primary: #003cff;
+      --primary-dark: #0028cc;
+      --secondary: #6c757d;
+      --success: #28a745;
+      --warning: #ffc107;
+      --danger: #dc3545;
+      --light: #f8f9fa;
+      --dark: #343a40;
+      --gray: #6c757d;
+      --light-gray: #e9ecef;
+      --border: #dee2e6;
+      --shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+      --radius: 8px;
+    }
+
+    body {
+      font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+      background-color: #f8f9fa;
+      color: #333;
+      line-height: 1.6;
+    }
+
+    /* Mobile-First Header */
+    .main-header {
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      color: white;
+      padding: 15px 0;
+      position: sticky;
+      top: 0;
+      z-index: 1000;
+    }
+
+    .header-content {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 15px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 10px;
+    }
+
+    .logo {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      text-decoration: none;
+      color: white;
+      flex-shrink: 0;
+    }
+
+    .logo i {
+      font-size: 1.5rem;
+    }
+
+    .logo-text {
+      font-size: 1.2rem;
+      font-weight: 700;
+    }
+
+    .header-actions {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .mobile-btn {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      width: 36px;
+      height: 36px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      text-decoration: none;
+      position: relative;
+      flex-shrink: 0;
+    }
+
+    .cart-count {
+      position: absolute;
+      top: -5px;
+      right: -5px;
+      background: var(--danger);
+      color: white;
+      font-size: 0.65rem;
+      font-weight: 600;
+      width: 18px;
+      height: 18px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+    }
+
+    /* Back Button */
+    .back-button {
+      background: rgba(255, 255, 255, 0.2);
+      color: white;
+      border: none;
+      padding: 8px 12px;
+      border-radius: 20px;
+      font-size: 0.9rem;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      transition: background 0.3s;
+    }
+
+    .back-button:hover {
+      background: rgba(255, 255, 255, 0.3);
+    }
+
+    /* Main Content */
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 20px 15px;
+    }
+
+    /* Account Header */
+    .account-header {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      margin-bottom: 30px;
+      padding: 20px;
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+    }
+
+    .profile-pic {
+      width: 100px;
+      height: 100px;
+      border-radius: 50%;
+      background: linear-gradient(135deg, var(--primary) 0%, var(--primary-dark) 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: white;
+      font-size: 2.5rem;
+      margin-bottom: 15px;
+      border: 4px solid white;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+    }
+
+    .user-name {
+      font-size: 1.4rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      color: var(--dark);
+    }
+
+    .user-email {
+      color: var(--gray);
+      font-size: 0.95rem;
+      margin-bottom: 15px;
+    }
+
+    .account-stats {
+      display: flex;
+      justify-content: center;
+      gap: 20px;
+      width: 100%;
+      max-width: 400px;
+      margin-top: 15px;
+    }
+
+    .stat-item {
+      text-align: center;
+      flex: 1;
+    }
+
+    .stat-value {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--primary);
+      display: block;
+    }
+
+    .stat-label {
+      font-size: 0.85rem;
+      color: var(--gray);
+      margin-top: 5px;
+    }
+
+    /* Account Navigation */
+    .account-nav {
+      display: flex;
+      overflow-x: auto;
+      -webkit-overflow-scrolling: touch;
+      scrollbar-width: none;
+      gap: 10px;
+      margin-bottom: 25px;
+      padding: 5px 0;
+    }
+
+    .account-nav::-webkit-scrollbar {
+      display: none;
+    }
+
+    .nav-tab {
+      padding: 10px 20px;
+      background: white;
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      color: var(--dark);
+      text-decoration: none;
+      font-size: 0.9rem;
+      white-space: nowrap;
+      flex-shrink: 0;
+      transition: all 0.3s;
+    }
+
+    .nav-tab.active {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+      font-weight: 500;
+    }
+
+    /* Account Sections */
+    .account-section {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      margin-bottom: 20px;
+      overflow: hidden;
+    }
+
+    .section-header {
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .section-header h3 {
+      font-size: 1.1rem;
+      color: var(--dark);
+      display: flex;
+      align-items: center;
+      gap: 10px;
+    }
+
+    .section-content {
+      padding: 20px;
+    }
+
+    /* Order History */
+    .orders-list {
+      display: flex;
+      flex-direction: column;
+      gap: 15px;
+    }
+
+    .order-item {
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      transition: all 0.3s;
+    }
+
+    .order-item:hover {
+      border-color: var(--primary);
+      box-shadow: 0 2px 8px rgba(0, 60, 255, 0.1);
+    }
+
+    .order-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-bottom: 10px;
+    }
+
+    .order-id {
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .order-date {
+      color: var(--gray);
+      font-size: 0.9rem;
+    }
+
+    .order-status {
+      padding: 4px 10px;
+      border-radius: 20px;
+      font-size: 0.8rem;
+      font-weight: 600;
+      text-transform: uppercase;
+    }
+
+    .status-delivered {
+      background: rgba(40, 167, 69, 0.1);
+      color: var(--success);
+    }
+
+    .status-processing {
+      background: rgba(255, 193, 7, 0.1);
+      color: var(--warning);
+    }
+
+    .status-pending {
+      background: rgba(108, 117, 125, 0.1);
+      color: var(--gray);
+    }
+
+    .order-details {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      margin-top: 10px;
+    }
+
+    .order-total {
+      font-weight: 700;
+      color: var(--primary);
+      font-size: 1.1rem;
+    }
+
+    .order-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    .btn-small {
+      padding: 6px 12px;
+      border: 1px solid var(--border);
+      border-radius: 4px;
+      background: white;
+      color: var(--dark);
+      font-size: 0.85rem;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+    }
+
+    .btn-small:hover {
+      background: var(--light);
+    }
+
+    .btn-small.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .btn-small.primary:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Address Book */
+    .addresses-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
+      gap: 15px;
+    }
+
+    .address-card {
+      padding: 20px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      position: relative;
+    }
+
+    .address-card.default {
+      border-color: var(--primary);
+      background: rgba(0, 60, 255, 0.02);
+    }
+
+    .address-header {
+      display: flex;
+      justify-content: space-between;
+      align-items: flex-start;
+      margin-bottom: 10px;
+    }
+
+    .address-name {
+      font-weight: 600;
+      color: var(--dark);
+    }
+
+    .default-badge {
+      background: var(--primary);
+      color: white;
+      padding: 2px 8px;
+      border-radius: 10px;
+      font-size: 0.75rem;
+      font-weight: 600;
+    }
+
+    .address-details {
+      color: var(--gray);
+      font-size: 0.9rem;
+      line-height: 1.5;
+      margin-bottom: 15px;
+    }
+
+    .address-actions {
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Wishlist */
+    .wishlist-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 15px;
+    }
+
+    .wishlist-item {
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      transition: all 0.3s;
+    }
+
+    .wishlist-item:hover {
+      border-color: var(--primary);
+      transform: translateY(-5px);
+      box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+    }
+
+    .wishlist-image {
+      height: 120px;
+      background: var(--light);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 10px;
+    }
+
+    .wishlist-image img {
+      max-width: 100%;
+      max-height: 100px;
+      object-fit: contain;
+    }
+
+    .wishlist-details {
+      padding: 12px;
+    }
+
+    .wishlist-name {
+      font-size: 0.9rem;
+      font-weight: 600;
+      margin-bottom: 5px;
+      display: -webkit-box;
+      -webkit-line-clamp: 2;
+      -webkit-box-orient: vertical;
+      overflow: hidden;
+      min-height: 2.5em;
+    }
+
+    .wishlist-price {
+      color: var(--primary);
+      font-weight: 700;
+      font-size: 1rem;
+      margin-bottom: 10px;
+    }
+
+    .wishlist-actions {
+      display: flex;
+      gap: 5px;
+    }
+
+    .btn-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      border: 1px solid var(--border);
+      background: white;
+      color: var(--dark);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .btn-icon:hover {
+      background: var(--light);
+    }
+
+    .btn-icon.primary {
+      background: var(--primary);
+      border-color: var(--primary);
+      color: white;
+    }
+
+    .btn-icon.primary:hover {
+      background: var(--primary-dark);
+    }
+
+    /* Settings */
+    .settings-list {
+      display: flex;
+      flex-direction: column;
+      gap: 10px;
+    }
+
+    .setting-item {
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+      padding: 15px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      cursor: pointer;
+      transition: all 0.3s;
+    }
+
+    .setting-item:hover {
+      border-color: var(--primary);
+      background: rgba(0, 60, 255, 0.02);
+    }
+
+    .setting-info {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+    }
+
+    .setting-icon {
+      width: 40px;
+      height: 40px;
+      border-radius: 8px;
+      background: rgba(0, 60, 255, 0.1);
+      color: var(--primary);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 1.2rem;
+    }
+
+    .setting-text h4 {
+      font-size: 1rem;
+      margin-bottom: 3px;
+      color: var(--dark);
+    }
+
+    .setting-text p {
+      font-size: 0.85rem;
+      color: var(--gray);
+    }
+
+    .toggle-switch {
+      position: relative;
+      width: 50px;
+      height: 26px;
+    }
+
+    .toggle-switch input {
+      opacity: 0;
+      width: 0;
+      height: 0;
+    }
+
+    .toggle-slider {
+      position: absolute;
+      cursor: pointer;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background-color: #ccc;
+      transition: .4s;
+      border-radius: 34px;
+    }
+
+    .toggle-slider:before {
+      position: absolute;
+      content: "";
+      height: 18px;
+      width: 18px;
+      left: 4px;
+      bottom: 4px;
+      background-color: white;
+      transition: .4s;
+      border-radius: 50%;
+    }
+
+    input:checked + .toggle-slider {
+      background-color: var(--primary);
+    }
+
+    input:checked + .toggle-slider:before {
+      transform: translateX(24px);
+    }
+
+    /* Empty States */
+    .empty-state {
+      text-align: center;
+      padding: 40px 20px;
+    }
+
+    .empty-state i {
+      font-size: 3rem;
+      color: var(--light-gray);
+      margin-bottom: 15px;
+    }
+
+    .empty-state h4 {
+      font-size: 1.2rem;
+      margin-bottom: 10px;
+      color: var(--dark);
+    }
+
+    .empty-state p {
+      color: var(--gray);
+      margin-bottom: 20px;
+    }
+
+    /* Buttons */
+    .btn {
+      padding: 12px 24px;
+      border-radius: var(--radius);
+      border: none;
+      font-size: 1rem;
+      font-weight: 600;
+      cursor: pointer;
+      transition: all 0.3s;
+      text-decoration: none;
+      display: inline-block;
+      text-align: center;
+    }
+
+    .btn-primary {
+      background: var(--primary);
+      color: white;
+    }
+
+    .btn-primary:hover {
+      background: var(--primary-dark);
+    }
+
+    .btn-outline {
+      background: white;
+      color: var(--primary);
+      border: 1px solid var(--primary);
+    }
+
+    .btn-outline:hover {
+      background: rgba(0, 60, 255, 0.05);
+    }
+
+    .btn-block {
+      display: block;
+      width: 100%;
+    }
+
+    /* Login/Signup Forms */
+    .auth-container {
+      max-width: 500px;
+      margin: 0 auto;
+      padding: 40px 20px;
+    }
+
+    .auth-card {
+      background: white;
+      border-radius: var(--radius);
+      box-shadow: var(--shadow);
+      padding: 30px;
+    }
+
+    .auth-header {
+      text-align: center;
+      margin-bottom: 30px;
+    }
+
+    .auth-header h2 {
+      font-size: 1.8rem;
+      color: var(--dark);
+      margin-bottom: 10px;
+    }
+
+    .auth-header p {
+      color: var(--gray);
+    }
+
+    .form-group {
+      margin-bottom: 20px;
+    }
+
+    .form-label {
+      display: block;
+      margin-bottom: 8px;
+      font-weight: 500;
+      color: var(--dark);
+    }
+
+    .form-control {
+      width: 100%;
+      padding: 12px 15px;
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      font-size: 1rem;
+      transition: border-color 0.3s;
+    }
+
+    .form-control:focus {
+      outline: none;
+      border-color: var(--primary);
+      box-shadow: 0 0 0 3px rgba(0, 60, 255, 0.1);
+    }
+
+    .form-check {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      margin-bottom: 20px;
+    }
+
+    .form-check input {
+      width: 18px;
+      height: 18px;
+    }
+
+    .form-check label {
+      font-size: 0.9rem;
+      color: var(--gray);
+    }
+
+    .auth-footer {
+      text-align: center;
+      margin-top: 30px;
+      color: var(--gray);
+      font-size: 0.95rem;
+    }
+
+    .auth-footer a {
+      color: var(--primary);
+      text-decoration: none;
+      font-weight: 600;
+    }
+
+    .auth-footer a:hover {
+      text-decoration: underline;
+    }
+
+    /* Modal */
+    .modal {
+      position: fixed;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(0, 0, 0, 0.5);
+      z-index: 2000;
+      display: none;
+      align-items: center;
+      justify-content: center;
+      padding: 20px;
+    }
+
+    .modal.active {
+      display: flex;
+    }
+
+    .modal-content {
+      background: white;
+      border-radius: var(--radius);
+      width: 100%;
+      max-width: 500px;
+      max-height: 90vh;
+      overflow-y: auto;
+      animation: slideUp 0.3s ease;
+    }
+
+    @keyframes slideUp {
+      from { transform: translateY(20px); opacity: 0; }
+      to { transform: translateY(0); opacity: 1; }
+    }
+
+    .modal-header {
+      padding: 20px;
+      border-bottom: 1px solid var(--border);
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .modal-body {
+      padding: 20px;
+    }
+
+    .modal-footer {
+      padding: 20px;
+      border-top: 1px solid var(--border);
+      display: flex;
+      gap: 10px;
+    }
+
+    /* Desktop Styles */
+    @media (min-width: 768px) {
+      .main-header {
+        padding: 20px 0;
+      }
+
+      .header-content {
+        padding: 0 20px;
+      }
+
+      .logo i {
+        font-size: 2rem;
+      }
+
+      .logo-text {
+        font-size: 1.5rem;
+      }
+
+      .main-container {
+        padding: 30px 20px;
+      }
+
+      .account-header {
+        flex-direction: row;
+        text-align: left;
+        align-items: center;
+        padding: 30px;
+      }
+
+      .profile-pic {
+        margin-right: 25px;
+        margin-bottom: 0;
+        width: 120px;
+        height: 120px;
+      }
+
+      .account-stats {
+        justify-content: flex-end;
+        margin-top: 0;
+      }
+
+      .account-nav {
+        justify-content: center;
+      }
+
+      .wishlist-grid {
+        grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+      }
+
+      .auth-container {
+        padding: 60px 20px;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .addresses-grid {
+        grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Mobile Header -->
+  <header class="main-header">
+    <div class="header-content">
+      <button class="back-button" onclick="window.history.back()">
+        <i class="fas fa-arrow-left"></i>
+        Back
+      </button>
+      
+      <a href="index.html" class="logo">
+        <i class="fas fa-shopping-bag"></i>
+        <span class="logo-text">iBlue</span>
+      </a>
+      
+      <div class="header-actions">
+        <a href="cart.html" class="mobile-btn" title="Cart">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count" id="cartCount">0</span>
+        </a>
+      </div>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <div class="main-container">
+    <!-- Check if user is logged in -->
+    <div id="loggedInView" style="display: none;">
+      <!-- Account Header -->
+      <div class="account-header">
+        <div class="profile-pic" id="userInitials">
+          <i class="fas fa-user"></i>
+        </div>
+        <div style="flex: 1;">
+          <h2 class="user-name" id="userName">Loading...</h2>
+          <p class="user-email" id="userEmail">Loading...</p>
+          <button class="btn btn-outline" onclick="logout()" style="margin-top: 10px;">
+            <i class="fas fa-sign-out-alt"></i> Logout
+          </button>
+        </div>
+        <div class="account-stats">
+          <div class="stat-item">
+            <span class="stat-value" id="ordersCount">0</span>
+            <span class="stat-label">Orders</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="wishlistCount">0</span>
+            <span class="stat-label">Wishlist</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-value" id="pointsCount">0</span>
+            <span class="stat-label">Points</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- Account Navigation -->
+      <nav class="account-nav">
+        <a href="#orders" class="nav-tab active" onclick="showSection('orders')">
+          <i class="fas fa-box"></i> Orders
+        </a>
+        <a href="#wishlist" class="nav-tab" onclick="showSection('wishlist')">
+          <i class="fas fa-heart"></i> Wishlist
+        </a>
+        <a href="#addresses" class="nav-tab" onclick="showSection('addresses')">
+          <i class="fas fa-map-marker-alt"></i> Addresses
+        </a>
+        <a href="#settings" class="nav-tab" onclick="showSection('settings')">
+          <i class="fas fa-cog"></i> Settings
+        </a>
+      </nav>
+
+      <!-- Orders Section -->
+      <section id="ordersSection" class="account-section">
+        <div class="section-header">
+          <h3><i class="fas fa-box"></i> Order History</h3>
+          <button class="btn-small" onclick="refreshOrders()">
+            <i class="fas fa-sync-alt"></i> Refresh
+          </button>
+        </div>
+        <div class="section-content">
+          <div class="orders-list" id="ordersList">
+            <!-- Orders will be loaded here -->
+          </div>
+          <div class="empty-state" id="emptyOrders" style="display: none;">
+            <i class="fas fa-box-open"></i>
+            <h4>No Orders Yet</h4>
+            <p>You haven't placed any orders yet.</p>
+            <a href="products.html" class="btn btn-primary">Start Shopping</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Wishlist Section -->
+      <section id="wishlistSection" class="account-section" style="display: none;">
+        <div class="section-header">
+          <h3><i class="fas fa-heart"></i> My Wishlist</h3>
+          <button class="btn-small" onclick="clearWishlist()">
+            <i class="fas fa-trash"></i> Clear All
+          </button>
+        </div>
+        <div class="section-content">
+          <div class="wishlist-grid" id="wishlistGrid">
+            <!-- Wishlist items will be loaded here -->
+          </div>
+          <div class="empty-state" id="emptyWishlist" style="display: none;">
+            <i class="fas fa-heart"></i>
+            <h4>Wishlist is Empty</h4>
+            <p>Save items you love for later.</p>
+            <a href="products.html" class="btn btn-primary">Browse Products</a>
+          </div>
+        </div>
+      </section>
+
+      <!-- Addresses Section -->
+      <section id="addressesSection" class="account-section" style="display: none;">
+        <div class="section-header">
+          <h3><i class="fas fa-map-marker-alt"></i> My Addresses</h3>
+          <button class="btn-small primary" onclick="openAddressModal()">
+            <i class="fas fa-plus"></i> Add New
+          </button>
+        </div>
+        <div class="section-content">
+          <div class="addresses-grid" id="addressesGrid">
+            <!-- Addresses will be loaded here -->
+          </div>
+          <div class="empty-state" id="emptyAddresses" style="display: none;">
+            <i class="fas fa-map-marker-alt"></i>
+            <h4>No Saved Addresses</h4>
+            <p>Add your addresses for faster checkout.</p>
+            <button class="btn btn-primary" onclick="openAddressModal()">
+              <i class="fas fa-plus"></i> Add Address
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- Settings Section -->
+      <section id="settingsSection" class="account-section" style="display: none;">
+        <div class="section-header">
+          <h3><i class="fas fa-cog"></i> Account Settings</h3>
+        </div>
+        <div class="section-content">
+          <div class="settings-list">
+            <div class="setting-item" onclick="openProfileModal()">
+              <div class="setting-info">
+                <div class="setting-icon">
+                  <i class="fas fa-user-edit"></i>
+                </div>
+                <div class="setting-text">
+                  <h4>Edit Profile</h4>
+                  <p>Update your personal information</p>
+                </div>
+              </div>
+              <i class="fas fa-chevron-right" style="color: var(--gray);"></i>
+            </div>
+
+            <div class="setting-item" onclick="openPasswordModal()">
+              <div class="setting-info">
+                <div class="setting-icon">
+                  <i class="fas fa-lock"></i>
+                </div>
+                <div class="setting-text">
+                  <h4>Change Password</h4>
+                  <p>Update your account password</p>
+                </div>
+              </div>
+              <i class="fas fa-chevron-right" style="color: var(--gray);"></i>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <div class="setting-icon">
+                  <i class="fas fa-bell"></i>
+                </div>
+                <div class="setting-text">
+                  <h4>Notifications</h4>
+                  <p>Manage your notification preferences</p>
+                </div>
+              </div>
+              <div class="toggle-switch">
+                <input type="checkbox" id="notificationsToggle" checked>
+                <span class="toggle-slider"></span>
+              </div>
+            </div>
+
+            <div class="setting-item">
+              <div class="setting-info">
+                <div class="setting-icon">
+                  <i class="fas fa-envelope"></i>
+                </div>
+                <div class="setting-text">
+                  <h4>Email Preferences</h4>
+                  <p>Control promotional emails</p>
+                </div>
+              </div>
+              <div class="toggle-switch">
+                <input type="checkbox" id="emailsToggle" checked>
+                <span class="toggle-slider"></span>
+              </div>
+            </div>
+
+            <div class="setting-item" onclick="openHelpModal()">
+              <div class="setting-info">
+                <div class="setting-icon">
+                  <i class="fas fa-question-circle"></i>
+                </div>
+                <div class="setting-text">
+                  <h4>Help & Support</h4>
+                  <p>Get help with your account</p>
+                </div>
+              </div>
+              <i class="fas fa-chevron-right" style="color: var(--gray);"></i>
+            </div>
+
+            <div class="setting-item" onclick="deleteAccount()" style="border-color: var(--danger);">
+              <div class="setting-info">
+                <div class="setting-icon" style="background: rgba(220, 53, 69, 0.1); color: var(--danger);">
+                  <i class="fas fa-trash"></i>
+                </div>
+                <div class="setting-text">
+                  <h4 style="color: var(--danger);">Delete Account</h4>
+                  <p>Permanently delete your account</p>
+                </div>
+              </div>
+              <i class="fas fa-chevron-right" style="color: var(--danger);"></i>
+            </div>
+          </div>
+        </div>
+      </section>
+    </div>
+
+    <!-- Login/Signup View -->
+    <div id="loginView">
+      <div class="auth-container">
+        <div class="auth-card">
+          <div class="auth-header">
+            <h2>Welcome to iBlue</h2>
+            <p>Sign in to your account or create a new one</p>
+          </div>
+
+          <div id="loginForm">
+            <div class="form-group">
+              <label class="form-label" for="loginEmail">Email Address</label>
+              <input type="email" class="form-control" id="loginEmail" placeholder="you@example.com">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="loginPassword">Password</label>
+              <input type="password" class="form-control" id="loginPassword" placeholder="••••••••">
+            </div>
+
+            <div class="form-check">
+              <input type="checkbox" id="rememberMe">
+              <label for="rememberMe">Remember me</label>
+            </div>
+
+            <button class="btn btn-primary btn-block" onclick="login()">
+              <i class="fas fa-sign-in-alt"></i> Sign In
+            </button>
+
+            <div class="auth-footer">
+              <p>Don't have an account? <a href="#" onclick="showSignup()">Sign up</a></p>
+              <p><a href="#" onclick="showForgotPassword()">Forgot your password?</a></p>
+            </div>
+          </div>
+
+          <div id="signupForm" style="display: none;">
+            <div class="form-group">
+              <label class="form-label" for="signupName">Full Name</label>
+              <input type="text" class="form-control" id="signupName" placeholder="John Doe">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="signupEmail">Email Address</label>
+              <input type="email" class="form-control" id="signupEmail" placeholder="you@example.com">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="signupPassword">Password</label>
+              <input type="password" class="form-control" id="signupPassword" placeholder="••••••••">
+            </div>
+
+            <div class="form-group">
+              <label class="form-label" for="signupConfirmPassword">Confirm Password</label>
+              <input type="password" class="form-control" id="signupConfirmPassword" placeholder="••••••••">
+            </div>
+
+            <div class="form-check">
+              <input type="checkbox" id="agreeTerms" required>
+              <label for="agreeTerms">I agree to the <a href="#" onclick="openTermsModal()">Terms of Service</a> and <a href="#" onclick="openPrivacyModal()">Privacy Policy</a></label>
+            </div>
+
+            <button class="btn btn-primary btn-block" onclick="signup()">
+              <i class="fas fa-user-plus"></i> Create Account
+            </button>
+
+            <div class="auth-footer">
+              <p>Already have an account? <a href="#" onclick="showLogin()">Sign in</a></p>
+            </div>
+          </div>
+
+          <div id="forgotPasswordForm" style="display: none;">
+            <div class="form-group">
+              <label class="form-label" for="forgotEmail">Email Address</label>
+              <input type="email" class="form-control" id="forgotEmail" placeholder="you@example.com">
+            </div>
+
+            <p style="color: var(--gray); font-size: 0.9rem; margin-bottom: 20px;">
+              Enter your email address and we'll send you instructions to reset your password.
+            </p>
+
+            <button class="btn btn-primary btn-block" onclick="resetPassword()">
+              <i class="fas fa-key"></i> Reset Password
+            </button>
+
+            <div class="auth-footer">
+              <p><a href="#" onclick="showLogin()">Back to login</a></p>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <!-- Address Modal -->
+  <div class="modal" id="addressModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="font-size: 1.2rem;">Add New Address</h3>
+        <button onclick="closeAddressModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--gray);">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Address Name</label>
+          <input type="text" class="form-control" id="addressName" placeholder="Home, Work, etc.">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-control" id="addressFullName" placeholder="John Doe">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-control" id="addressPhone" placeholder="+256 700 000 000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Address Line 1</label>
+          <input type="text" class="form-control" id="addressLine1" placeholder="Street address, P.O. Box">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Address Line 2</label>
+          <input type="text" class="form-control" id="addressLine2" placeholder="Apartment, suite, unit, building, floor">
+        </div>
+        <div class="form-group">
+          <label class="form-label">City/Town</label>
+          <input type="text" class="form-control" id="addressCity" placeholder="City or town">
+        </div>
+        <div class="form-group">
+          <label class="form-label">District/Region</label>
+          <input type="text" class="form-control" id="addressRegion" placeholder="District or region">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Postal Code</label>
+          <input type="text" class="form-control" id="addressPostal" placeholder="Postal code">
+        </div>
+        <div class="form-check">
+          <input type="checkbox" id="addressDefault">
+          <label for="addressDefault">Set as default address</label>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeAddressModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveAddress()">Save Address</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Profile Modal -->
+  <div class="modal" id="profileModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="font-size: 1.2rem;">Edit Profile</h3>
+        <button onclick="closeProfileModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--gray);">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Full Name</label>
+          <input type="text" class="form-control" id="profileName" placeholder="John Doe">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address</label>
+          <input type="email" class="form-control" id="profileEmail" placeholder="you@example.com">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number</label>
+          <input type="tel" class="form-control" id="profilePhone" placeholder="+256 700 000 000">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date of Birth</label>
+          <input type="date" class="form-control" id="profileDob">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Gender</label>
+          <select class="form-control" id="profileGender">
+            <option value="">Select Gender</option>
+            <option value="male">Male</option>
+            <option value="female">Female</option>
+            <option value="other">Other</option>
+            <option value="prefer-not-to-say">Prefer not to say</option>
+          </select>
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closeProfileModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="saveProfile()">Save Changes</button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Password Modal -->
+  <div class="modal" id="passwordModal">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h3 style="font-size: 1.2rem;">Change Password</h3>
+        <button onclick="closePasswordModal()" style="background: none; border: none; font-size: 1.2rem; cursor: pointer; color: var(--gray);">
+          <i class="fas fa-times"></i>
+        </button>
+      </div>
+      <div class="modal-body">
+        <div class="form-group">
+          <label class="form-label">Current Password</label>
+          <input type="password" class="form-control" id="currentPassword" placeholder="••••••••">
+        </div>
+        <div class="form-group">
+          <label class="form-label">New Password</label>
+          <input type="password" class="form-control" id="newPassword" placeholder="••••••••">
+        </div>
+        <div class="form-group">
+          <label class="form-label">Confirm New Password</label>
+          <input type="password" class="form-control" id="confirmPassword" placeholder="••••••••">
+        </div>
+      </div>
+      <div class="modal-footer">
+        <button class="btn btn-outline" onclick="closePasswordModal()">Cancel</button>
+        <button class="btn btn-primary" onclick="savePassword()">Change Password</button>
+      </div>
+    </div>
+  </div>
+
+  <script>
+    // Check if user is logged in
+    function checkLoginStatus() {
+      const user = localStorage.getItem('user');
+      const loggedInView = document.getElementById('loggedInView');
+      const loginView = document.getElementById('loginView');
+      
+      if (user) {
+        loggedInView.style.display = 'block';
+        loginView.style.display = 'none';
+        loadUserData();
+        loadOrders();
+        loadWishlist();
+        loadAddresses();
+        updateCartCount();
+      } else {
+        loggedInView.style.display = 'none';
+        loginView.style.display = 'block';
+      }
+    }
+
+    // Load user data
+    function loadUserData() {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      
+      // Set user name and email
+      document.getElementById('userName').textContent = user.name || 'User';
+      document.getElementById('userEmail').textContent = user.email || 'user@example.com';
+      
+      // Set user initials in profile pic
+      const initials = getInitials(user.name || 'User');
+      const profilePic = document.getElementById('userInitials');
+      profilePic.innerHTML = initials || '<i class="fas fa-user"></i>';
+      
+      // Update stats
+      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+      const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+      
+      document.getElementById('ordersCount').textContent = orders.length;
+      document.getElementById('wishlistCount').textContent = wishlist.length;
+      document.getElementById('pointsCount').textContent = user.points || '0';
+    }
+
+    // Get initials from name
+    function getInitials(name) {
+      return name
+        .split(' ')
+        .map(word => word[0])
+        .join('')
+        .toUpperCase()
+        .substring(0, 2);
+    }
+
+    // Show/hide sections
+    function showSection(section) {
+      // Hide all sections
+      document.getElementById('ordersSection').style.display = 'none';
+      document.getElementById('wishlistSection').style.display = 'none';
+      document.getElementById('addressesSection').style.display = 'none';
+      document.getElementById('settingsSection').style.display = 'none';
+      
+      // Remove active class from all tabs
+      document.querySelectorAll('.nav-tab').forEach(tab => {
+        tab.classList.remove('active');
+      });
+      
+      // Show selected section
+      document.getElementById(section + 'Section').style.display = 'block';
+      
+      // Add active class to clicked tab
+      event.target.classList.add('active');
+    }
+
+    // Login function
+    function login() {
+      const email = document.getElementById('loginEmail').value;
+      const password = document.getElementById('loginPassword').value;
+      
+      if (!email || !password) {
+        alert('Please enter both email and password');
+        return;
+      }
+      
+      // Simple validation
+      if (password.length < 6) {
+        alert('Password must be at least 6 characters');
+        return;
+      }
+      
+      // For demo purposes, create a mock user
+      const user = {
+        id: Date.now().toString(),
+        name: email.split('@')[0],
+        email: email,
+        phone: '+256 700 000 000',
+        joined: new Date().toISOString(),
+        points: 150
+      };
+      
+      // Save user to localStorage
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      // Show success message
+      alert('Login successful!');
+      
+      // Reload page to show logged in view
+      checkLoginStatus();
+    }
+
+    // Signup function
+    function signup() {
+      const name = document.getElementById('signupName').value;
+      const email = document.getElementById('signupEmail').value;
+      const password = document.getElementById('signupPassword').value;
+      const confirmPassword = document.getElementById('signupConfirmPassword').value;
+      const agreeTerms = document.getElementById('agreeTerms').checked;
+      
+      if (!name || !email || !password || !confirmPassword) {
+        alert('Please fill in all fields');
+        return;
+      }
+      
+      if (password !== confirmPassword) {
+        alert('Passwords do not match');
+        return;
+      }
+      
+      if (password.length < 6) {
+        alert('Password must be at least 6 characters');
+        return;
+      }
+      
+      if (!agreeTerms) {
+        alert('Please agree to the Terms of Service and Privacy Policy');
+        return;
+      }
+      
+      // Check if user already exists
+      const existingUser = localStorage.getItem('user');
+      if (existingUser) {
+        alert('You are already logged in');
+        return;
+      }
+      
+      // Create new user
+      const user = {
+        id: Date.now().toString(),
+        name: name,
+        email: email,
+        phone: '',
+        joined: new Date().toISOString(),
+        points: 100 // Bonus points for signup
+      };
+      
+      // Save user to localStorage
+      localStorage.setItem('user', JSON.stringify(user));
+      
+      // Show success message
+      alert('Account created successfully! Welcome to iBlue!');
+      
+      // Show login view
+      showLogin();
+    }
+
+    // Reset password function
+    function resetPassword() {
+      const email = document.getElementById('forgotEmail').value;
+      
+      if (!email) {
+        alert('Please enter your email address');
+        return;
+      }
+      
+      alert(`Password reset instructions have been sent to ${email}`);
+      showLogin();
+    }
+
+    // Show login form
+    function showLogin() {
+      document.getElementById('loginForm').style.display = 'block';
+      document.getElementById('signupForm').style.display = 'none';
+      document.getElementById('forgotPasswordForm').style.display = 'none';
+    }
+
+    // Show signup form
+    function showSignup() {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('signupForm').style.display = 'block';
+      document.getElementById('forgotPasswordForm').style.display = 'none';
+    }
+
+    // Show forgot password form
+    function showForgotPassword() {
+      document.getElementById('loginForm').style.display = 'none';
+      document.getElementById('signupForm').style.display = 'none';
+      document.getElementById('forgotPasswordForm').style.display = 'block';
+    }
+
+    // Logout function
+    function logout() {
+      if (confirm('Are you sure you want to logout?')) {
+        localStorage.removeItem('user');
+        checkLoginStatus();
+      }
+    }
+
+    // Load orders
+    function loadOrders() {
+      const orders = JSON.parse(localStorage.getItem('orders') || '[]');
+      const ordersList = document.getElementById('ordersList');
+      const emptyOrders = document.getElementById('emptyOrders');
+      
+      ordersList.innerHTML = '';
+      
+      if (orders.length === 0) {
+        emptyOrders.style.display = 'block';
+        return;
+      }
+      
+      emptyOrders.style.display = 'none';
+      
+      // Display last 5 orders
+      orders.slice(0, 5).forEach(order => {
+        const orderItem = document.createElement('div');
+        orderItem.className = 'order-item';
+        
+        // Format date
+        const orderDate = new Date(order.date).toLocaleDateString('en-US', {
+          year: 'numeric',
+          month: 'short',
+          day: 'numeric'
+        });
+        
+        // Status class
+        let statusClass = 'status-pending';
+        if (order.status === 'delivered') statusClass = 'status-delivered';
+        if (order.status === 'processing') statusClass = 'status-processing';
+        
+        orderItem.innerHTML = `
+          <div class="order-header">
+            <div>
+              <div class="order-id">Order #${order.id}</div>
+              <div class="order-date">${orderDate}</div>
+            </div>
+            <div class="order-status ${statusClass}">${order.status}</div>
+          </div>
+          <div style="font-size: 0.9rem; color: var(--gray);">
+            ${order.items} item${order.items !== 1 ? 's' : ''}
+          </div>
+          <div class="order-details">
+            <div class="order-total">UGX ${order.total.toLocaleString()}</div>
+            <div class="order-actions">
+              <a href="#" class="btn-small">View Details</a>
+              <a href="#" class="btn-small primary">Reorder</a>
+            </div>
+          </div>
+        `;
+        
+        ordersList.appendChild(orderItem);
+      });
+    }
+
+    // Load wishlist
+    function loadWishlist() {
+      const wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+      const wishlistGrid = document.getElementById('wishlistGrid');
+      const emptyWishlist = document.getElementById('emptyWishlist');
+      
+      wishlistGrid.innerHTML = '';
+      
+      if (wishlist.length === 0) {
+        emptyWishlist.style.display = 'block';
+        return;
+      }
+      
+      emptyWishlist.style.display = 'none';
+      
+      // Display wishlist items
+      wishlist.forEach(item => {
+        const wishlistItem = document.createElement('div');
+        wishlistItem.className = 'wishlist-item';
+        
+        wishlistItem.innerHTML = `
+          <div class="wishlist-image">
+            <img src="${item.image || 'https://via.placeholder.com/150x150?text=Product'}" alt="${item.name}">
+          </div>
+          <div class="wishlist-details">
+            <div class="wishlist-name">${item.name}</div>
+            <div class="wishlist-price">UGX ${item.price.toLocaleString()}</div>
+            <div class="wishlist-actions">
+              <button class="btn-icon" onclick="removeFromWishlist('${item.id}')" title="Remove">
+                <i class="fas fa-trash"></i>
+              </button>
+              <button class="btn-icon primary" onclick="addToCartFromWishlist('${item.id}')" title="Add to Cart">
+                <i class="fas fa-shopping-cart"></i>
+              </button>
+            </div>
+          </div>
+        `;
+        
+        wishlistGrid.appendChild(wishlistItem);
+      });
+    }
+
+    // Remove from wishlist
+    function removeFromWishlist(itemId) {
+      let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+      wishlist = wishlist.filter(item => item.id !== itemId);
+      localStorage.setItem('wishlist', JSON.stringify(wishlist));
+      loadWishlist();
+      loadUserData(); // Update count
+      alert('Item removed from wishlist');
+    }
+
+    // Add to cart from wishlist
+    function addToCartFromWishlist(itemId) {
+      let wishlist = JSON.parse(localStorage.getItem('wishlist') || '[]');
+      const item = wishlist.find(item => item.id === itemId);
+      
+      if (item) {
+        let cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const existingItem = cart.find(cartItem => cartItem.id === itemId);
+        
+        if (existingItem) {
+          existingItem.quantity += 1;
+        } else {
+          cart.push({
+            ...item,
+            quantity: 1
+          });
+        }
+        
+        localStorage.setItem('cart', JSON.stringify(cart));
+        updateCartCount();
+        alert('Item added to cart');
+      }
+    }
+
+    // Clear wishlist
+    function clearWishlist() {
+      if (confirm('Are you sure you want to clear your entire wishlist?')) {
+        localStorage.removeItem('wishlist');
+        loadWishlist();
+        loadUserData();
+        alert('Wishlist cleared');
+      }
+    }
+
+    // Load addresses
+    function loadAddresses() {
+      const addresses = JSON.parse(localStorage.getItem('addresses') || '[]');
+      const addressesGrid = document.getElementById('addressesGrid');
+      const emptyAddresses = document.getElementById('emptyAddresses');
+      
+      addressesGrid.innerHTML = '';
+      
+      if (addresses.length === 0) {
+        emptyAddresses.style.display = 'block';
+        return;
+      }
+      
+      emptyAddresses.style.display = 'none';
+      
+      addresses.forEach(address => {
+        const addressCard = document.createElement('div');
+        addressCard.className = `address-card ${address.default ? 'default' : ''}`;
+        
+        addressCard.innerHTML = `
+          <div class="address-header">
+            <div class="address-name">${address.name}</div>
+            ${address.default ? '<div class="default-badge">Default</div>' : ''}
+          </div>
+          <div class="address-details">
+            <div><strong>${address.fullName}</strong></div>
+            <div>${address.phone}</div>
+            <div>${address.line1}</div>
+            ${address.line2 ? `<div>${address.line2}</div>` : ''}
+            <div>${address.city}, ${address.region}</div>
+            ${address.postal ? `<div>${address.postal}</div>` : ''}
+          </div>
+          <div class="address-actions">
+            <button class="btn-small" onclick="editAddress('${address.id}')">Edit</button>
+            <button class="btn-small" onclick="deleteAddress('${address.id}')">Delete</button>
+            ${!address.default ? `<button class="btn-small primary" onclick="setDefaultAddress('${address.id}')">Set as Default</button>` : ''}
+          </div>
+        `;
+        
+        addressesGrid.appendChild(addressCard);
+      });
+    }
+
+    // Open address modal
+    function openAddressModal() {
+      document.getElementById('addressModal').classList.add('active');
+    }
+
+    // Close address modal
+    function closeAddressModal() {
+      document.getElementById('addressModal').classList.remove('active');
+      // Clear form
+      document.getElementById('addressName').value = '';
+      document.getElementById('addressFullName').value = '';
+      document.getElementById('addressPhone').value = '';
+      document.getElementById('addressLine1').value = '';
+      document.getElementById('addressLine2').value = '';
+      document.getElementById('addressCity').value = '';
+      document.getElementById('addressRegion').value = '';
+      document.getElementById('addressPostal').value = '';
+      document.getElementById('addressDefault').checked = false;
+    }
+
+    // Save address
+    function saveAddress() {
+      const address = {
+        id: Date.now().toString(),
+        name: document.getElementById('addressName').value,
+        fullName: document.getElementById('addressFullName').value,
+        phone: document.getElementById('addressPhone').value,
+        line1: document.getElementById('addressLine1').value,
+        line2: document.getElementById('addressLine2').value,
+        city: document.getElementById('addressCity').value,
+        region: document.getElementById('addressRegion').value,
+        postal: document.getElementById('addressPostal').value,
+        default: document.getElementById('addressDefault').checked
+      };
+      
+      if (!address.name || !address.fullName || !address.phone || !address.line1 || !address.city || !address.region) {
+        alert('Please fill in all required fields');
+        return;
+      }
+      
+      let addresses = JSON.parse(localStorage.getItem('addresses') || '[]');
+      
+      // If this is default, remove default from others
+      if (address.default) {
+        addresses.forEach(addr => {
+          addr.default = false;
+        });
+      }
+      
+      addresses.push(address);
+      localStorage.setItem('addresses', JSON.stringify(addresses));
+      
+      closeAddressModal();
+      loadAddresses();
+      alert('Address saved successfully');
+    }
+
+    // Edit address
+    function editAddress(addressId) {
+      // For simplicity, we'll just delete and re-add
+      deleteAddress(addressId);
+      openAddressModal();
+    }
+
+    // Delete address
+    function deleteAddress(addressId) {
+      if (confirm('Are you sure you want to delete this address?')) {
+        let addresses = JSON.parse(localStorage.getItem('addresses') || '[]');
+        addresses = addresses.filter(addr => addr.id !== addressId);
+        localStorage.setItem('addresses', JSON.stringify(addresses));
+        loadAddresses();
+        alert('Address deleted');
+      }
+    }
+
+    // Set default address
+    function setDefaultAddress(addressId) {
+      let addresses = JSON.parse(localStorage.getItem('addresses') || '[]');
+      addresses.forEach(addr => {
+        addr.default = addr.id === addressId;
+      });
+      localStorage.setItem('addresses', JSON.stringify(addresses));
+      loadAddresses();
+      alert('Default address updated');
+    }
+
+    // Refresh orders
+    function refreshOrders() {
+      loadOrders();
+      alert('Orders refreshed');
+    }
+
+    // Update cart count
+    function updateCartCount() {
+      try {
+        const cart = JSON.parse(localStorage.getItem('cart') || '[]');
+        const totalItems = cart.reduce((sum, item) => sum + (item.quantity || 0), 0);
+        document.getElementById('cartCount').textContent = totalItems;
+      } catch (error) {
+        document.getElementById('cartCount').textContent = '0';
+      }
+    }
+
+    // Open profile modal
+    function openProfileModal() {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      
+      document.getElementById('profileName').value = user.name || '';
+      document.getElementById('profileEmail').value = user.email || '';
+      document.getElementById('profilePhone').value = user.phone || '';
+      document.getElementById('profileDob').value = user.dob || '';
+      document.getElementById('profileGender').value = user.gender || '';
+      
+      document.getElementById('profileModal').classList.add('active');
+    }
+
+    // Close profile modal
+    function closeProfileModal() {
+      document.getElementById('profileModal').classList.remove('active');
+    }
+
+    // Save profile
+    function saveProfile() {
+      const user = JSON.parse(localStorage.getItem('user') || '{}');
+      
+      user.name = document.getElementById('profileName').value;
+      user.email = document.getElementById('profileEmail').value;
+      user.phone = document.getElementById('profilePhone').value;
+      user.dob = document.getElementById('profileDob').value;
+      user.gender = document.getElementById('profileGender').value;
+      
+      if (!user.name || !user.email) {
+        alert('Name and email are required');
+        return;
+      }
+      
+      localStorage.setItem('user', JSON.stringify(user));
+      closeProfileModal();
+      loadUserData();
+      alert('Profile updated successfully');
+    }
+
+    // Open password modal
+    function openPasswordModal() {
+      document.getElementById('passwordModal').classList.add('active');
+    }
+
+    // Close password modal
+    function closePasswordModal() {
+      document.getElementById('passwordModal').classList.remove('active');
+      // Clear form
+      document.getElementById('currentPassword').value = '';
+      document.getElementById('newPassword').value = '';
+      document.getElementById('confirmPassword').value = '';
+    }
+
+    // Save password
+    function savePassword() {
+      const currentPassword = document.getElementById('currentPassword').value;
+      const newPassword = document.getElementById('newPassword').value;
+      const confirmPassword = document.getElementById('confirmPassword').value;
+      
+      if (!currentPassword || !newPassword || !confirmPassword) {
+        alert('Please fill in all fields');
+        return;
+      }
+      
+      if (newPassword.length < 6) {
+        alert('New password must be at least 6 characters');
+        return;
+      }
+      
+      if (newPassword !== confirmPassword) {
+        alert('New passwords do not match');
+        return;
+      }
+      
+      // In a real app, you would verify current password with server
+      // For demo, we'll just assume it's correct
+      
+      closePasswordModal();
+      alert('Password changed successfully');
+    }
+
+    // Delete account
+    function deleteAccount() {
+      if (confirm('Are you sure you want to delete your account? This action cannot be undone.')) {
+        if (confirm('This will permanently delete all your data. Are you absolutely sure?')) {
+          localStorage.removeItem('user');
+          localStorage.removeItem('orders');
+          localStorage.removeItem('wishlist');
+          localStorage.removeItem('addresses');
+          localStorage.removeItem('cart');
+          checkLoginStatus();
+          alert('Account deleted successfully');
+        }
+      }
+    }
+
+    // Open terms modal
+    function openTermsModal() {
+      alert('Terms of Service would appear here in a real application.');
+    }
+
+    // Open privacy modal
+    function openPrivacyModal() {
+      alert('Privacy Policy would appear here in a real application.');
+    }
+
+    // Open help modal
+    function openHelpModal() {
+      alert('Help and support information would appear here.');
+    }
+
+    // Initialize page
+    document.addEventListener('DOMContentLoaded', function() {
+      checkLoginStatus();
+      
+      // Load demo data if none exists
+      if (!localStorage.getItem('orders')) {
+        // Create demo orders
+        const demoOrders = [
+          {
+            id: 'ORD-' + Date.now().toString().slice(-6),
+            date: new Date(Date.now() - 7 * 24 * 60 * 60 * 1000).toISOString(),
+            status: 'delivered',
+            items: 3,
+            total: 125000
+          },
+          {
+            id: 'ORD-' + (Date.now() - 1000000).toString().slice(-6),
+            date: new Date(Date.now() - 14 * 24 * 60 * 60 * 1000).toISOString(),
+            status: 'processing',
+            items: 1,
+            total: 45000
+          }
+        ];
+        localStorage.setItem('orders', JSON.stringify(demoOrders));
+      }
+      
+      if (!localStorage.getItem('wishlist')) {
+        // Create demo wishlist
+        const demoWishlist = [
+          {
+            id: 'WISH-1',
+            name: 'Wireless Headphones',
+            price: 85000,
+            image: 'https://images.unsplash.com/photo-1505740420928-5e560c06d30e?w=150&h=150&fit=crop'
+          },
+          {
+            id: 'WISH-2',
+            name: 'Smart Watch',
+            price: 120000,
+            image: 'https://images.unsplash.com/photo-1523275335684-37898b6baf30?w=150&h=150&fit=crop'
+          }
+        ];
+        localStorage.setItem('wishlist', JSON.stringify(demoWishlist));
+      }
+      
+      if (!localStorage.getItem('addresses')) {
+        // Create demo addresses
+        const demoAddresses = [
+          {
+            id: 'ADDR-1',
+            name: 'Home',
+            fullName: 'John Doe',
+            phone: '+256 700 123 456',
+            line1: '123 Main Street',
+            line2: 'Apartment 4B',
+            city: 'Kampala',
+            region: 'Central',
+            postal: '00256',
+            default: true
+          }
+        ];
+        localStorage.setItem('addresses', JSON.stringify(demoAddresses));
+      }
+      
+      // Load initial data
+      loadOrders();
+      loadWishlist();
+      loadAddresses();
+    });
+  </script>
+</body>
+</html>

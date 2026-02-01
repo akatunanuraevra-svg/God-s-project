@@ -1,0 +1,581 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Categories | iBlue</title>
+
+  <!-- Supabase JS v2 -->
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+
+  <style>
+    /* CSS Reset for mobile */
+    * {
+      margin: 0;
+      padding: 0;
+      box-sizing: border-box;
+    }
+
+    body {
+      font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, sans-serif;
+      background: #f4f6f8;
+      margin: 0;
+      padding: 0;
+      min-height: 100vh;
+      color: #333;
+    }
+
+    /* Header & Navigation */
+    .header {
+      background: linear-gradient(135deg, #003cff 0%, #0066ff 100%);
+      color: white;
+      padding: 1rem 0;
+      box-shadow: 0 2px 10px rgba(0, 60, 255, 0.1);
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    .nav-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 0 1rem;
+      display: flex;
+      justify-content: space-between;
+      align-items: center;
+    }
+
+    .logo {
+      font-weight: 700;
+      font-size: 1.5rem;
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+    }
+
+    .logo-icon {
+      font-size: 1.8rem;
+    }
+
+    .menu-toggle {
+      display: none;
+      background: transparent;
+      border: none;
+      color: white;
+      font-size: 1.5rem;
+      cursor: pointer;
+    }
+
+    .nav-links {
+      display: flex;
+      gap: 1.5rem;
+    }
+
+    .nav-links a {
+      color: white;
+      text-decoration: none;
+      font-weight: 500;
+      padding: 0.5rem 0.75rem;
+      border-radius: 6px;
+      transition: background 0.2s;
+    }
+
+    .nav-links a:hover {
+      background: rgba(255, 255, 255, 0.15);
+    }
+
+    /* Main content */
+    .main-container {
+      max-width: 1200px;
+      margin: 0 auto;
+      padding: 1.5rem 1rem;
+    }
+
+    h1 {
+      color: #003cff;
+      margin-bottom: 1.5rem;
+      text-align: center;
+      font-size: 1.8rem;
+    }
+
+    /* Search and Filter Bar */
+    .filter-bar {
+      display: flex;
+      flex-direction: column;
+      gap: 1rem;
+      margin-bottom: 1.5rem;
+    }
+
+    .search-box {
+      position: relative;
+      flex: 1;
+    }
+
+    .search-input {
+      width: 100%;
+      padding: 0.875rem 1rem 0.875rem 2.75rem;
+      border: 1px solid #ddd;
+      border-radius: 10px;
+      font-size: 1rem;
+      background: white;
+      outline: none;
+      transition: border-color 0.2s, box-shadow 0.2s;
+    }
+
+    .search-input:focus {
+      border-color: #003cff;
+      box-shadow: 0 0 0 3px rgba(0, 60, 255, 0.1);
+    }
+
+    .search-icon {
+      position: absolute;
+      left: 1rem;
+      top: 50%;
+      transform: translateY(-50%);
+      color: #777;
+      pointer-events: none;
+    }
+
+    /* Categories Grid - Mobile First */
+    .categories {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+      gap: 1rem;
+      margin-top: 1rem;
+    }
+
+    /* Category Card */
+    .category {
+      background: white;
+      padding: 1.5rem 1rem;
+      border-radius: 12px;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.05);
+      text-align: center;
+      cursor: pointer;
+      transition: transform 0.3s ease, box-shadow 0.3s ease;
+      display: flex;
+      flex-direction: column;
+      justify-content: center;
+      align-items: center;
+      border: 1px solid #f0f0f0;
+      aspect-ratio: 1/1;
+    }
+
+    .category:hover, .category:active {
+      transform: translateY(-5px);
+      box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+    }
+
+    .category h3 {
+      margin: 0 0 0.5rem;
+      color: #003cff;
+      font-size: 1.1rem;
+      font-weight: 600;
+      text-transform: capitalize;
+      line-height: 1.3;
+      word-break: break-word;
+    }
+
+    .count {
+      color: #666;
+      font-size: 0.875rem;
+      background: #f0f5ff;
+      padding: 0.25rem 0.75rem;
+      border-radius: 20px;
+      font-weight: 500;
+    }
+
+    /* Loading state */
+    .loading {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 3rem 1rem;
+      text-align: center;
+      color: #666;
+    }
+
+    .spinner {
+      width: 40px;
+      height: 40px;
+      border: 3px solid #f0f0f0;
+      border-top: 3px solid #003cff;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+      margin-bottom: 1rem;
+    }
+
+    @keyframes spin {
+      0% { transform: rotate(0deg); }
+      100% { transform: rotate(360deg); }
+    }
+
+    /* Empty state */
+    .empty-state {
+      text-align: center;
+      padding: 3rem 1rem;
+      color: #666;
+    }
+
+    .empty-state-icon {
+      font-size: 3rem;
+      margin-bottom: 1rem;
+      color: #ccc;
+    }
+
+    /* Footer */
+    .footer {
+      margin-top: 3rem;
+      padding: 2rem 1rem;
+      background: white;
+      border-top: 1px solid #eee;
+      text-align: center;
+      color: #666;
+      font-size: 0.875rem;
+    }
+
+    /* Responsive adjustments */
+    @media (max-width: 768px) {
+      .menu-toggle {
+        display: block;
+      }
+
+      .nav-links {
+        display: none;
+        position: absolute;
+        top: 100%;
+        left: 0;
+        width: 100%;
+        background: #003cff;
+        flex-direction: column;
+        padding: 1rem;
+        border-radius: 0 0 12px 12px;
+        box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+      }
+
+      .nav-links.active {
+        display: flex;
+      }
+
+      .nav-links a {
+        padding: 0.75rem;
+      }
+
+      h1 {
+        font-size: 1.6rem;
+        margin-bottom: 1.25rem;
+      }
+
+      .categories {
+        grid-template-columns: repeat(2, 1fr);
+        gap: 0.75rem;
+      }
+
+      .category {
+        padding: 1.25rem 0.75rem;
+        aspect-ratio: 1/1;
+      }
+
+      .category h3 {
+        font-size: 1rem;
+      }
+
+      .count {
+        font-size: 0.8125rem;
+      }
+    }
+
+    @media (max-width: 480px) {
+      .categories {
+        grid-template-columns: 1fr;
+        gap: 0.75rem;
+      }
+
+      .category {
+        aspect-ratio: 2/1;
+        flex-direction: row;
+        justify-content: space-between;
+        padding: 1rem 1.25rem;
+        text-align: left;
+      }
+
+      .category h3 {
+        margin-bottom: 0;
+      }
+
+      .logo {
+        font-size: 1.25rem;
+      }
+
+      .main-container {
+        padding: 1.25rem 0.75rem;
+      }
+
+      h1 {
+        font-size: 1.4rem;
+      }
+    }
+
+    @media (min-width: 1024px) {
+      .categories {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+        gap: 1.5rem;
+      }
+
+      .filter-bar {
+        flex-direction: row;
+        align-items: center;
+      }
+
+      .search-box {
+        max-width: 350px;
+      }
+    }
+
+    /* Touch-friendly improvements */
+    .category {
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+    }
+
+    .category:active {
+      background: #f8faff;
+      transition: transform 0.1s;
+    }
+
+    /* Accessibility */
+    @media (prefers-reduced-motion: reduce) {
+      .category, .category:hover {
+        transition: none;
+      }
+
+      .spinner {
+        animation-duration: 2s;
+      }
+    }
+  </style>
+</head>
+<body>
+  <!-- Header with Navigation -->
+  <header class="header">
+    <div class="nav-container">
+      <div class="logo">
+        <span class="logo-icon">📱</span>
+        <span>iBlue</span>
+      </div>
+      <button class="menu-toggle" id="menuToggle" aria-label="Toggle navigation">
+        ☰
+      </button>
+      <nav class="nav-links" id="navLinks">
+        <a href="#" class="active">Categories</a>
+        <a href="#">Deals</a>
+        <a href="#">New Arrivals</a>
+        <a href="#">Account</a>
+        <a href="#">Cart</a>
+      </nav>
+    </div>
+  </header>
+
+  <!-- Main Content -->
+  <main class="main-container">
+    <h1>Shop by Category</h1>
+    
+    <!-- Filter Bar -->
+    <div class="filter-bar">
+      <div class="search-box">
+        <span class="search-icon">🔍</span>
+        <input 
+          type="search" 
+          class="search-input" 
+          id="searchInput" 
+          placeholder="Search categories..." 
+          aria-label="Search categories"
+        >
+      </div>
+    </div>
+
+    <!-- Categories Container -->
+    <div class="categories" id="categories">
+      <!-- Loading state initially -->
+      <div class="loading">
+        <div class="spinner"></div>
+        <p>Loading categories...</p>
+      </div>
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="footer">
+    <p>© 2023 iBlue Mobile Store. All rights reserved.</p>
+    <p>99% of our users shop on mobile - optimized for your device.</p>
+  </footer>
+
+  <script>
+    // ✅ YOUR SUPABASE DETAILS
+    const SUPABASE_URL = "https://amxhpxqakqrjjihwkzcq.supabase.co";
+    const SUPABASE_ANON_KEY =
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpc3MiOiJzdXBhYmFzZSIsInJlZiI6ImFteGhweHFha3FyamppaHdremNxIiwicm9sZSI6ImFub24iLCJpYXQiOjE3Njc5Nzc2NjUsImV4cCI6MjA4MzU1MzY2NX0.yIAZtz3bUc_ZxF8-f4cqW1fKJgFiRsiJdj4qgCDmM0g";
+
+    const { createClient } = window.supabase;
+    const sb = createClient(SUPABASE_URL, SUPABASE_ANON_KEY);
+
+    // Mobile menu toggle
+    const menuToggle = document.getElementById('menuToggle');
+    const navLinks = document.getElementById('navLinks');
+
+    menuToggle.addEventListener('click', () => {
+      navLinks.classList.toggle('active');
+      menuToggle.setAttribute('aria-expanded', navLinks.classList.contains('active'));
+    });
+
+    // Close menu when clicking outside
+    document.addEventListener('click', (e) => {
+      if (!menuToggle.contains(e.target) && !navLinks.contains(e.target)) {
+        navLinks.classList.remove('active');
+        menuToggle.setAttribute('aria-expanded', 'false');
+      }
+    });
+
+    // Category data and filtering
+    let categoriesData = [];
+
+    async function loadCategories() {
+      const container = document.getElementById('categories');
+      
+      try {
+        const { data, error } = await sb
+          .from("products")
+          .select("category")
+          .eq("active", true);
+
+        if (error) {
+          throw new Error(error.message);
+        }
+
+        // Count products per category
+        const map = {};
+        data.forEach(item => {
+          if (!item.category) return;
+          map[item.category] = (map[item.category] || 0) + 1;
+        });
+
+        categoriesData = Object.entries(map).map(([name, count]) => ({
+          name,
+          count
+        }));
+
+        if (categoriesData.length === 0) {
+          displayEmptyState();
+          return;
+        }
+
+        displayCategories(categoriesData);
+        setupSearchFilter();
+      } catch (error) {
+        console.error("Failed to load categories:", error);
+        container.innerHTML = `
+          <div class="empty-state">
+            <div class="empty-state-icon">⚠️</div>
+            <p>Failed to load categories. Please check your connection.</p>
+            <button onclick="loadCategories()" style="margin-top: 1rem; padding: 0.5rem 1rem; background: #003cff; color: white; border: none; border-radius: 6px; cursor: pointer;">
+              Retry
+            </button>
+          </div>
+        `;
+      }
+    }
+
+    function displayCategories(categories) {
+      const container = document.getElementById('categories');
+      container.innerHTML = '';
+
+      if (categories.length === 0) {
+        displayEmptyState();
+        return;
+      }
+
+      categories.forEach(({ name, count }) => {
+        const div = document.createElement("div");
+        div.className = "category";
+        div.setAttribute('role', 'button');
+        div.setAttribute('tabindex', '0');
+        div.setAttribute('aria-label', `${name} category with ${count} products`);
+        
+        // Add click/tap event
+        div.addEventListener('click', () => {
+          window.location.href = `products.html?category=${encodeURIComponent(name)}`;
+        });
+        
+        // Add keyboard support for accessibility
+        div.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            window.location.href = `products.html?category=${encodeURIComponent(name)}`;
+          }
+        });
+
+        div.innerHTML = `
+          <h3>${name}</h3>
+          <div class="count">${count} product${count !== 1 ? 's' : ''}</div>
+        `;
+
+        container.appendChild(div);
+      });
+    }
+
+    function displayEmptyState() {
+      const container = document.getElementById('categories');
+      container.innerHTML = `
+        <div class="empty-state">
+          <div class="empty-state-icon">📂</div>
+          <p>No categories found.</p>
+          <p>Check back soon for new product categories.</p>
+        </div>
+      `;
+    }
+
+    function setupSearchFilter() {
+      const searchInput = document.getElementById('searchInput');
+      
+      searchInput.addEventListener('input', (e) => {
+        const searchTerm = e.target.value.toLowerCase().trim();
+        
+        if (!searchTerm) {
+          displayCategories(categoriesData);
+          return;
+        }
+        
+        const filtered = categoriesData.filter(cat => 
+          cat.name.toLowerCase().includes(searchTerm)
+        );
+        
+        displayCategories(filtered);
+      });
+      
+      // Clear search on escape key
+      searchInput.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape') {
+          searchInput.value = '';
+          displayCategories(categoriesData);
+          searchInput.blur();
+        }
+      });
+    }
+
+    // Load categories on page load
+    document.addEventListener('DOMContentLoaded', loadCategories);
+
+    // Handle orientation changes for better mobile experience
+    window.addEventListener('orientationchange', () => {
+      // Small delay to ensure CSS recalc is complete
+      setTimeout(() => {
+        // Trigger a re-layout if needed
+        if (window.innerWidth < 480) {
+          document.body.style.minHeight = window.innerHeight + 'px';
+        }
+      }, 100);
+    });
+  </script>
+</body>
+</html>
